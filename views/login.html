@@ -1,0 +1,153 @@
+
+    <!DOCTYPE html>
+    <html lang="en">
+    
+    <head>
+    
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <link rel="icon" href="/img/logo-base.png">
+        <title>Rangpol</title>
+    
+        <!-- Custom fonts for this template-->
+        <link href="/css/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+        <link
+            href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+            rel="stylesheet">
+    
+        <!-- Custom styles for this template-->
+        <link href="/css/sb-admin-2.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="css/base.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+    </head>
+    
+    <body>
+    
+        <div class="container">
+            <!-- Outer Row -->
+            <div class="row justify-content-center mt-5">
+                <div class="col-xl-5 col-lg-5 col-md-5">
+                    {{if .flash_error}}
+                            <div class="alert fade show alert-danger text-center" role="alert">
+                                {{.flash_error}}
+                                <button class="close" type="button" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                        {{end}}
+                    <div class="card o-hidden border-0 shadow-lg my-5" id="card"
+                        style="background-color: rgba(28, 161, 164, 0.8);">
+                        
+                        <div class="card-body p-0">
+                            <!-- Nested Row within Card Body -->
+                            <div class="p-5">
+                                <div class="card bg-transparent border-0">
+                                    <a class="brand" href="/">
+                                        <img src="/img/undraw_profile_1.svg" width="80px" alt="">
+                                    </a>
+                                    <div class="card-body">
+                                        <form class="user" form method="POST" action="/login">
+                                            <div class="form-group">
+                                                <input name="username" id="username" class="form-control form-control-user @error('username') is-invalid @enderror"
+                                                    placeholder="Username" autofocus required >
+                                            </div>
+                                            <div class="form-group">
+                                                <input name="password" id="password" type="password"
+                                                    class="form-control form-control-user" id="exampleInputPassword"
+                                                    placeholder="Password" required>
+                                                <span id="mybutton" onclick="change()"><i class="fas fa-eye"></i></span>
+                                            </div>
+                                            <button type="submit" class="btn btn-user btn-block"
+                                                style="background-color: #27353B;color: white;">
+                                                Login
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="text-center">
+                                    <a class="small" href="forgot_password.php">Forgot Password?</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    
+                </div>
+    
+            </div>
+    
+        </div>
+    
+        <!-- Bootstrap core JavaScript-->
+        <script src="/vendor/jquery/jquery.min.js"></script>
+        <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    
+        <!-- Core plugin JavaScript-->
+        <script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
+    
+        <!-- Custom scripts for all pages-->
+        <script src="/js/sb-admin-2.min.js"></script>
+    
+        <script type="text/javascript">
+            function change() {
+                var x = document.getElementById('exampleInputPassword').type;
+    
+                if (x == 'password') {
+                    document.getElementById('exampleInputPassword').type = 'text';
+                    document.getElementById('mybutton').innerHTML = '<i class="fas fa-eye-slash"></i>';
+                } else {
+                    document.getElementById('exampleInputPassword').type = 'password';
+                    document.getElementById('mybutton').innerHTML = '<i class="fas fa-eye"></i>';
+                }
+            }
+    
+        </script>
+        <style>
+            body {
+                background-color: rgba(28, 161, 164, 1);
+                background-image: url('/img/2.jpg');
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+                background-size: cover;
+            }
+    
+            #card {
+                border-radius: 20px;
+            }
+    
+            .text-center a {
+                color: white;
+            }
+    
+            #mybutton {
+                position: relative;
+                z-index: 1;
+                left: 90%;
+                top: -37px;
+                cursor: pointer;
+                color: grey;
+            }
+    
+            .form-control:focus,
+            .form-group input:hover {
+                border-color: #27353B;
+                box-shadow: 0 0 0 0.2rem rgba(39, 53, 59, 0.25);
+            }
+    
+            button .btn:hover {
+                background-color: white;
+                color: rgba(39, 53, 59, 1);
+            }
+    
+            .brand {
+                text-align: center;
+            }
+    
+        </style>
+    </body>
+    
+    </html>
