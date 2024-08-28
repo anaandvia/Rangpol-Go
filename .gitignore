@@ -1,2 +1,2 @@
 /.well-known
-/gofiber/server/.env
+.env
