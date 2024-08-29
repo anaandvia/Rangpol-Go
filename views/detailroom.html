@@ -1,0 +1,121 @@
+{{ define "detailroom" }}
+{{template "header" .}}
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Detail Ruangan {{.Room.No_room}}</h1>
+</div>
+
+<!-- Content Row -->
+<div class="row">
+    <!-- Content Row -->
+    <div class="col-lg-12">
+        <form action="">
+            <div class="col-lg-12">
+                <div class="row">
+                    <div class="col-lg-4 pb-3 pt-3">
+                        <div id="carousel" class="carousel slide" data-ride="carousel">
+                            <ol class="carousel-indicators">
+                                <li data-target="#carousel" data-slide-to="0" class="active"></li>
+                                <li data-target="#carousel" data-slide-to="1"></li>
+                            </ol>
+                            <div class="carousel-inner border border-light rounded" role="listbox">
+                                <div class="carousel-item active">
+                                    <img class="d-block w-100 " src="{{.Room.Foto}}"
+                                        alt="First slide">
+                                </div>
+                            </div>
+                            <a class="carousel-control-prev" href="#carousel" role="button"
+                                data-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                            <a class="carousel-control-next" href="#carousel" role="button"
+                                data-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Next</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-sm-7 pt-2" style="text-align:left">
+                        <div class="form-group">
+                            <table style="border: 0px;margin-bottom:10px;">
+                                <tr>
+                                    <td>Nama Ruangan</td>
+                                    <td>:</td>
+                                    <td>
+                                        {{.Room.No_room}} - {{.Room.Name_room}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Lantai</td>
+                                    <td>:</td>
+                                    <td>{{.Room.Lantai}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Kapasitas</td>
+                                    <td>:</td>
+                                    <td>{{.Room.Kapasitas}} Mahasiswa </td>
+                                </tr>
+                                <tr>
+                                    <td>PIC</td>
+                                    <td>:</td>
+                                    <td>{{.Room.DetailRoom.PIC}} </td>
+                                </tr>
+                            </table>
+                            <table>
+                            <tr>
+                                <td><a href="#" class="btn btn-success" data-toggle="modal" data-target="#fasilitas">Lihat Fasilitas</a></td>
+                                <td><a class="btn btn-warning" href="/peminjaman?id={{.Room.Id_room}}">BORANG</a></td>
+                            </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </form>
+    </div>
+    <a href="/">Back to List</a>
+    <div class="col-lg-12">
+    <div class="card shadow mb-4" style="margin-top: 30px;">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0"
+                    style="background-color: white; color:black">
+                    <thead>
+                        <tr>
+                            <th>Nama Peminjam</th>
+                            <th>Nama Kegiatan</th>
+                            <th>Tgl Kegiatan</th>
+                            <th>Tgl Selesai Kegiatan</th>
+                            <th>Keterangan</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{range .Peminjaman}}
+                        {{if lt .Status 3}}
+                        <tr>
+                            <td>{{.User.Name_user}}</td>
+                            <td>{{.NamaKegiatan}}</td>
+                            <td>{{.TglAcaraDay}}, {{.TglAcaraFormatted}}</td>
+                            <td>{{.TglAkhirAcaraDay}}, {{.TglAkhirAcaraFormatted}}</td>
+                            <td>{{.DetailPeminjaman.Keterangan}}</td>
+                            <td>
+                                {{if eq .Status 1}}<p style='color:green;'>Disetujui</p>{{end}}
+                                {{if eq .Status 2}}<p style='color:red;'>Ditolak</p>{{end}}
+                                {{if eq .Status 0}}<p style='color:grey;'>Diajukan</p>{{end}}
+                            </td>
+                        </tr>
+                        {{end}}
+                        {{end}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    </div>    
+</div>
+
+</div>
+<!-- /.container-fluid -->
+{{template "footer" }}
+{{ end }}

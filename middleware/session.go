@@ -4,6 +4,7 @@ package middleware
 import (
 	"rangpol/database"
 	"rangpol/models"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/session"
@@ -12,7 +13,12 @@ import (
 var Store *session.Store
 
 func InitSessionStore() {
-	Store = session.New()
+	Store = session.New(session.Config{
+		CookieHTTPOnly: true,
+		CookieSecure:   true,  // Pastikan HTTPS digunakan
+		CookieSameSite: "Lax", // Atau "Strict" jika memungkinkan
+		Expiration:     24 * time.Hour,
+	})
 }
 
 func GetSessionStore() *session.Store {

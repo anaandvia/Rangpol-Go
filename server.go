@@ -39,12 +39,10 @@ func main() {
 	app := fiber.New(fiber.Config{
 		Views: engine,
 	})
-	app.Static("/css", "./css")
-	app.Static("/vendor", "./vendor")
-	app.Static("/img", "./img")
-	app.Static("/vendor", "./vendor")
-	app.Static("/js", "./js")
-	app.Static("/scss", "./scss")
+	app.Static("/css", "./views/css")
+	app.Static("/vendor", "./views/vendor")
+	app.Static("/img", "./views/img")
+	app.Static("/js", "./views/js")
 
 	// store := session.New()
 
@@ -52,6 +50,7 @@ func main() {
 		AllowOrigins: "*",
 		AllowHeaders: "Origin, Content-Type, Accept",
 	}))
+	app.Use(middleware.LantaiMiddleware())
 
 	app.Use(logger.New())
 	// app.Use(store.Handler())

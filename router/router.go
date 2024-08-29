@@ -22,6 +22,7 @@ func SetupRouters(app *fiber.App) {
 	// app.Post("/login", controller.LoginUser)
 
 	app.Get("/login", middleware.RedirectIfAuthenticated, controller.LoginFormController)
+	app.Get("/detail_room", controller.RoomDetailController)
 
 	// Other routes
 	app.Post("/login", controller.LoginPostController)
