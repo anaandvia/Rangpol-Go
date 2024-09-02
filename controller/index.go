@@ -22,18 +22,21 @@ func HomeController(c *fiber.Ctx) error {
 		return c.Redirect("/login")
 	}
 
-	// Ambil pesan flash error jika ada
+	// Ambil pesan flash error
 	flashError := sess.Get("flash_error")
+
+	// Ambil pesan flash success
+	flashSuccess := sess.Get("flash_success")
+
+	// Hapus kedua pesan flash setelah diambil
 	sess.Delete("flash_error")
+	sess.Delete("flash_success")
+
+	// Simpan session setelah semua operasi selesai
 	if err := sess.Save(); err != nil {
 		return c.Status(fiber.StatusInternalServerError).SendString("Error saving session")
 	}
 
-	// Ambil data lantai dari database
-	// var floors []models.Lantai
-	// if err := database.DBConn.Order("no_lantai ASC").Find(&floors).Error; err != nil {
-	// 	return c.Status(fiber.StatusInternalServerError).SendString("Error retrieving floors")
-	// }
 	idLantai := c.Query("id")
 
 	floors := c.Locals("floors").([]models.Lantai)
@@ -61,11 +64,12 @@ func HomeController(c *fiber.Ctx) error {
 	// Render halaman dengan data yang diperlukan
 
 	return c.Render("index", fiber.Map{
-		"flash_error": flashError,
-		"Title":       "Home Page",
-		"Floors":      floors,
-		"Rooms":       rooms,
-		"isIndex":     1,
-		"Dashboard":   dashboard,
+		"flash_error":   flashError,
+		"flash_success": flashSuccess,
+		"Title":         "Home Page",
+		"Floors":        floors,
+		"Rooms":         rooms,
+		"isIndex":       1,
+		"Dashboard":     dashboard,
 	})
 }

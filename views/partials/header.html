@@ -85,7 +85,7 @@
                     </div>
                 </div>
             </li>
-            
+
 
             <li class="nav-item">
                 <a class="nav-link" href="/history">
@@ -127,8 +127,7 @@
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
-                                <img class="img-profile rounded-circle"
-                                    src="img/undraw_profile.svg">
+                                <img class="img-profile rounded-circle" src="img/undraw_profile.svg">
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -159,5 +158,17 @@
                             <span aria-hidden="true">×</span>
                         </button>
                     </div>
-                {{end}}
-{{end}}
+                    {{end}}
+                    {{if .flash_success}}
+                    <div class="alert fade show alert-success text-center" role="alert">
+                        {{.flash_success}}
+                        <button class="close" type="button" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    {{end}}
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">{{ .Dashboard }}</h1>
+                    </div>
+                    {{end}}

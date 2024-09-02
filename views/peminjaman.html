@@ -1,0 +1,97 @@
+{{ define "peminjaman" }}
+{{template "header" .}}
+<div class="row" style="text-align:left;">
+    <div class="col-lg-6">
+        <form action="/borang" method="post">
+            <div class="form-group">
+                <label for="nama_kegiatan">Nama Kegiatan</label>
+                <input type="text" class="form-control" id="nama_kegiatan" name="nama_kegiatan"
+                    placeholder="Nama Kegiatan" required>
+            </div>
+            <div class="form-group">
+                <label for="tgl_acara">Tgl Kegiatan</label>
+                <input class="form-control form_datetime" type="datetime-local" id="tgl_acara" name="tgl_acara"
+                    required>
+            </div>
+            <div class="form-group">
+                <label for="tgl_akhir_acara">Tgl Akhir Kegiatan</label>
+                <input class="form-control form_datetime" type="datetime-local" id="tgl_akhir_acara"
+                    name="tgl_akhir_acara" required>
+            </div>
+            <div class="form-group">
+                <label for="PJ">Penanggung Jawab</label>
+                <input type="text" class="form-control" id="PJ" name="PJ" placeholder="Penanggung Jawab" required>
+            </div>
+            <div class="form-group">
+                <label for="PA">Pendamping Acara</label>
+                <input type="text" class="form-control" id="PA" name="PA" placeholder="Pendamping Acara" required>
+            </div>
+            <div class="form-group">
+                <label for="PK">Pengarah Kegiatan</label>
+                <input type="text" class="form-control" id="PK" name="PK" placeholder="Pengarah Kegiatan" required>
+            </div>
+            <div class="form-group">
+                <label for="n_tamu">Jumlah Tamu</label>
+                <input type="text" class="form-control" id="n_tamu" name="n_tamu" placeholder="Jumlah Tamu" required>
+            </div>
+            <div class="form-group">
+                <label for="sifat_acara">Sifat Kegiatan</label>
+                <select class="form-control" id="sifat_acara" name="sifat_acara" required>
+                    <option value="Acara Mahasiswa">Acara Mahasiswa</option>
+                    <option value="Acara Polibatam">Acara Polibatam</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="jenis_acara">Jenis Kegiatan</label>
+                <select class="form-control" id="jenis_acara" name="jenis_acara" required>
+                    <option value="Diskusi">Diskusi</option>
+                    <option value="Kunjungan">Kunjungan</option>
+                    <option value="Presentasi Profil">Presentasi Profil</option>
+                    <option value="Promosi">Promosi</option>
+                    <option value="Lain-Lain">Lain-Lain</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="keterangan">Keterangan</label>
+                <textarea class="form-control" id="keterangan" name="keterangan" rows="3" placeholder="Keterangan"
+                    required></textarea>
+            </div>
+    </div>
+    <div class="col-lg-6" style="color: white;">
+        <input type="hidden" class="form-control" id="id_user" name="id_user" value="{{.User.Id_user}}" readonly>
+        <div class="form-group">
+            <label for="nim">NIM</label>
+            <input type="text" class="form-control" id="nim" name="nim" value="{{.User.Nim}}" readonly>
+        </div>
+        <div class="form-group">
+            <label for="nama">Nama</label>
+            <input type="text" class="form-control" id="name_user" name="name_user" value="{{.User.Name_user}}"
+                readonly>
+        </div>
+        <div class="form-group">
+            <label for="id_room">Room</label>
+            <select class="form-control" id="id_room" name="id_room" required>
+                {{range .Rooms}}
+                <option value="{{.Id_room}}" {{if eq .Id_room $.SelectedID}}selected{{end}}>{{.No_room}} -
+                    {{.Name_room}}</option>
+                {{else}}
+                <option value="">No rooms available</option>
+                {{end}}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-warning">BORANG</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    var selectElement = document.getElementById("id_room");
+    var selectedValue = selectElement.value;
+    console.log("Selected Room ID:", selectedValue);
+
+    // If using JavaScript to set form values or hidden fields, ensure correct assignment
+});
+</script>
+{{template "footer" }}
+{{ end }}
