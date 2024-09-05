@@ -40,6 +40,7 @@ func HomeController(c *fiber.Ctx) error {
 	idLantai := c.Query("id")
 
 	floors := c.Locals("floors").([]models.Lantai)
+	menus := c.Locals("menus").(map[string][]models.Menu)
 
 	dashboard := "Dashboard"
 	// Ambil data ruangan dari database
@@ -71,5 +72,6 @@ func HomeController(c *fiber.Ctx) error {
 		"Rooms":         rooms,
 		"isIndex":       1,
 		"Dashboard":     dashboard,
+		"menus":         menus,
 	})
 }

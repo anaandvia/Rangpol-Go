@@ -51,6 +51,7 @@ func main() {
 		AllowHeaders: "Origin, Content-Type, Accept",
 	}))
 	app.Use(middleware.LantaiMiddleware())
+	app.Use(middleware.GetMenu)
 
 	app.Use(logger.New())
 	// app.Use(store.Handler())

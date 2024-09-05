@@ -67,6 +67,7 @@ func RoomDetailController(c *fiber.Ctx) error {
 	}
 
 	floors := c.Locals("floors").([]models.Lantai)
+	menus := c.Locals("menus").(map[string][]models.Menu)
 
 	// Render the detail page with the room data
 	return c.Render("detailroom", fiber.Map{
@@ -75,5 +76,6 @@ func RoomDetailController(c *fiber.Ctx) error {
 		"flash_error": flashError,
 		"Peminjaman":  peminjaman,
 		"Floors":      floors,
+		"menus":       menus,
 	})
 }

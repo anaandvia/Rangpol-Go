@@ -1,6 +1,11 @@
 package models
 
-import "time"
+import (
+	"errors"
+	"time"
+
+	"gorm.io/gorm"
+)
 
 type Peminjaman struct {
 	IdPeminjaman           uint             `json:"id_peminjaman" gorm:"primaryKey;autoIncrement"`
@@ -18,4 +23,11 @@ type Peminjaman struct {
 	TglAkhirAcaraFormatted string
 	TglAcaraDay            string `json:"tgl_acara_day"`
 	TglAkhirAcaraDay       string `json:"tgl_akhir_acara_day"`
+}
+
+func (p *Peminjaman) BeforeSave(tx *gorm.DB) (err error) {
+	if p.TglAkhirAcara.Before(p.TglAcara) {
+		return errors.New("TglAkhirAcara cannot be before TglAcara")
+	}
+	return nil
 }

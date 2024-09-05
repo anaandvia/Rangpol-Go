@@ -56,6 +56,7 @@ func PeminjamanFormController(c *fiber.Ctx) error {
 	}
 
 	floors := c.Locals("floors").([]models.Lantai)
+	menus := c.Locals("menus").(map[string][]models.Menu)
 	// log.Printf("Rooms Data: %+v\n", rooms)
 
 	// Render the detail page with the room data
@@ -65,30 +66,39 @@ func PeminjamanFormController(c *fiber.Ctx) error {
 		"flash_error": flashError,
 		"User":        user,
 		"Floors":      floors,
+		"menus":       menus,
 		"Dashboard":   "Peminjaman Ruangan",
 		"SelectedID":  uint(idRoom),
 	})
 }
 
-const datetimeLayout = "2006-01-02T15:04"
-
 func PeminjamanController(c *fiber.Ctx) error {
+
+	sess, err := middleware.GetSessionStore().Get(c)
+	if err != nil {
+		log.Println("Error getting session:", err)
+		return err
+	}
 	// Ambil data dari form
 	idUser, _ := strconv.Atoi(c.FormValue("id_user"))
 	idRoom, _ := strconv.Atoi(c.FormValue("id_room"))
 	namaKegiatan := c.FormValue("nama_kegiatan")
 	tglAcaraStr := c.FormValue("tgl_acara")
 	tglAkhirAcaraStr := c.FormValue("tgl_akhir_acara")
+	tglAcaraWithTZ := tglAcaraStr + "+07:00"
+	tglAkhirAcaraWithTZ := tglAkhirAcaraStr + "+07:00"
+
 	// Parse string to time.Time
-	tglAcara, err := time.Parse(datetimeLayout, tglAcaraStr)
+	tglAcara, err := time.Parse(time.RFC3339, tglAcaraWithTZ)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).SendString("Invalid datetime format for tgl_acara: " + err.Error())
 	}
 
-	tglAkhirAcara, err := time.Parse(datetimeLayout, tglAkhirAcaraStr)
+	tglAkhirAcara, err := time.Parse(time.RFC3339, tglAkhirAcaraWithTZ)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).SendString("Invalid datetime format for tgl_akhir_acara: " + err.Error())
 	}
+
 	PJ := c.FormValue("PJ")
 	PA := c.FormValue("PA")
 	PK := c.FormValue("PK")
@@ -96,7 +106,7 @@ func PeminjamanController(c *fiber.Ctx) error {
 	sifatAcara := c.FormValue("sifat_acara")
 	jenisAcara := c.FormValue("jenis_acara")
 	keterangan := c.FormValue("keterangan")
-	log.Println(uint(idRoom))
+
 	// Inisialisasi database
 	db := database.DBConn
 
@@ -110,9 +120,26 @@ func PeminjamanController(c *fiber.Ctx) error {
 		Status:        0,
 		TglAcc:        time.Time{},
 	}
+
 	if err := db.Create(&peminjaman).Error; err != nil {
-		return c.Status(fiber.StatusInternalServerError).SendString("Error inserting peminjaman")
+		log.Println("Error inserting peminjaman:", err)
+
+		sess.Set("flash_error", "TglAkhirAcara cannot be before TglAcara")
+		if err := sess.Save(); err != nil {
+			log.Println("Error saving session:", err)
+			return c.Status(fiber.StatusInternalServerError).SendString("Error saving session")
+		}
+
+		referer := c.Get("Referer")
+		if referer == "" {
+			referer = "/" // default fallback jika Referer tidak tersedia
+		}
+		return c.Redirect(referer)
 	}
+
+	// if err := db.Create(&peminjaman).Error; err != nil {
+	// 	return c.Status(fiber.StatusInternalServerError).SendString("Error inserting peminjaman 2")
+	// }
 
 	// Ambil ID peminjaman yang baru
 	idPeminjaman := peminjaman.IdPeminjaman
@@ -142,17 +169,8 @@ func PeminjamanController(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).SendString("Error inserting pengembalian")
 	}
 
-	log.Println("Data successfully inserted")
-
-	// Redirect to index page
-	// Ambil pesan flash error jika ada
-
-	sess, err := middleware.GetSessionStore().Get(c)
-	if err != nil {
-		return err
-	}
-
 	// Set pesan flash sukses
+
 	sess.Set("flash_success", "Peminjaman Ruangan Berhasil Di ajukan")
 
 	// Simpan session

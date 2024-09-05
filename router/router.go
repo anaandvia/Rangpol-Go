@@ -34,8 +34,8 @@ func SetupRouters(app *fiber.App) {
 
 	app.Get("/register", controller.RegisterFormController) // Route for registration form
 	app.Post("/register", controller.RegisterController)
-	app.Post("/", controller.BlogCreate)
-	app.Put("/:id", controller.BlogUpdate)
-	app.Delete("/:id", controller.BlogDelete)
+	// app.Post("/", controller.BlogCreate)
+	// app.Put("/:id", controller.BlogUpdate)
+	// app.Delete("/:id", controller.BlogDelete)
 
 }
