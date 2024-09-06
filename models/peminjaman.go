@@ -35,8 +35,8 @@ func (p *Peminjaman) BeforeSave(tx *gorm.DB) (err error) {
 	// Validasi: Cek apakah ada peminjaman lain yang tumpang tindih
 	var count int64
 	err = tx.Model(&Peminjaman{}).
-		Where("id_room = ? AND ((tgl_acara <= ? AND tgl_akhir_acara >= ?) OR (tgl_acara <= ? AND tgl_akhir_acara >= ?))",
-			p.IdRoom, p.TglAkhirAcara, p.TglAcara, p.TglAkhirAcara, p.TglAcara).
+		Where("id_room = ? AND ((tgl_acara <= ? AND tgl_akhir_acara >= ?) OR (tgl_acara <= ? AND tgl_akhir_acara >= ?)) AND status != ?",
+			p.IdRoom, p.TglAkhirAcara, p.TglAcara, p.TglAkhirAcara, p.TglAcara, 2).
 		Count(&count).Error
 	if err != nil {
 		return err
