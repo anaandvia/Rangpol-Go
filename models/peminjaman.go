@@ -27,8 +27,24 @@ type Peminjaman struct {
 }
 
 func (p *Peminjaman) BeforeSave(tx *gorm.DB) (err error) {
+	// Validasi: TglAkhirAcara tidak boleh sebelum TglAcara
 	if p.TglAkhirAcara.Before(p.TglAcara) {
 		return errors.New("TglAkhirAcara cannot be before TglAcara")
 	}
+
+	// Validasi: Cek apakah ada peminjaman lain yang tumpang tindih
+	var count int64
+	err = tx.Model(&Peminjaman{}).
+		Where("id_room = ? AND ((tgl_acara <= ? AND tgl_akhir_acara >= ?) OR (tgl_acara <= ? AND tgl_akhir_acara >= ?))",
+			p.IdRoom, p.TglAkhirAcara, p.TglAcara, p.TglAkhirAcara, p.TglAcara).
+		Count(&count).Error
+	if err != nil {
+		return err
+	}
+
+	if count > 0 {
+		return errors.New("Room is already booked for the specified time period")
+	}
+
 	return nil
 }

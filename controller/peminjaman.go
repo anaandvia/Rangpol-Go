@@ -127,7 +127,7 @@ func PeminjamanController(c *fiber.Ctx) error {
 	if err := db.Create(&peminjaman).Error; err != nil {
 		log.Println("Error inserting peminjaman:", err)
 
-		sess.Set("flash_error", "TglAkhirAcara cannot be before TglAcara")
+		sess.Set("flash_error", err.Error())
 		if err := sess.Save(); err != nil {
 			log.Println("Error saving session:", err)
 			return c.Status(fiber.StatusInternalServerError).SendString("Error saving session")

@@ -25,7 +25,6 @@
                     </thead>
                     <tbody>
                         {{range .Peminjaman}}
-                        {{if lt .Status 3}}
                         <tr>
                             <td>{{.NamaKegiatan}}</td>
                             <td>Tgl Acara : {{.TglAcaraDay}}, {{.TglAcaraFormatted}} <br> Tgl Akhir Acara : {{.TglAkhirAcaraDay}}, {{.TglAkhirAcaraFormatted}}</td>
@@ -48,7 +47,6 @@
                             </td>
                             <td>{{if eq .Status 1}}<a href="/">Cetak Bukti</a>{{ else }} {{ end }}</td>
                         </tr>
-                        {{end}}
                         {{end}}
                     </tbody>
                 </table>
