@@ -7,10 +7,9 @@ import (
 	"rangpol/models"
 
 	"github.com/gofiber/fiber/v2"
-	"gorm.io/gorm"
 )
 
-func RoomDetailController(c *fiber.Ctx) error {
+func HistoryPeminjamanController(c *fiber.Ctx) error {
 
 	// Ambil sesi pengguna
 	sess, err := middleware.GetSessionStore().Get(c)
@@ -32,28 +31,14 @@ func RoomDetailController(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).SendString("Error saving session")
 	}
 
-	// Get the room ID from the query parameters
-	id := c.Query("id")
-	if id == "" {
-		return c.Status(fiber.StatusBadRequest).SendString("Room ID is required")
-	}
-
-	var room models.Room
-	// Fetch the room details from the database along with its associated details
-	if err := database.DBConn.Preload("DetailRoom").First(&room, id).Error; err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return c.Status(fiber.StatusNotFound).SendString("Room not found")
-		}
-		return c.Status(fiber.StatusInternalServerError).SendString("Error retrieving room")
-	}
-
 	var peminjaman []models.Peminjaman
 
 	if err := database.DBConn.
 		Preload("User").
 		Preload("DetailPeminjaman").
 		Preload("Room").
-		Where("id_room = ?", id).
+		Preload("Pengembalian").
+		Where("id_user = ?", userID).
 		Find(&peminjaman).
 		Error; err != nil {
 		return c.Status(fiber.StatusInternalServerError).SendString("Error retrieving data")
@@ -71,9 +56,8 @@ func RoomDetailController(c *fiber.Ctx) error {
 	menus := c.Locals("menus").(map[string][]models.Menu)
 
 	// Render the detail page with the room data
-	return c.Render("detailroom", fiber.Map{
-		"Title":       "Room Details",
-		"Room":        room,
+	return c.Render("history", fiber.Map{
+		"Title":       "History",
 		"flash_error": flashError,
 		"Peminjaman":  peminjaman,
 		"Floors":      floors,

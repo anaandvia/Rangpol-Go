@@ -21,8 +21,9 @@ type Peminjaman struct {
 	Room                   Room             `gorm:"foreignKey:IdRoom;references:Id_room"`
 	TglAcaraFormatted      string
 	TglAkhirAcaraFormatted string
-	TglAcaraDay            string `json:"tgl_acara_day"`
-	TglAkhirAcaraDay       string `json:"tgl_akhir_acara_day"`
+	TglAcaraDay            string         `json:"tgl_acara_day"`
+	TglAkhirAcaraDay       string         `json:"tgl_akhir_acara_day"`
+	Pengembalian           []Pengembalian `gorm:"foreignKey:IdPeminjaman"`
 }
 
 func (p *Peminjaman) BeforeSave(tx *gorm.DB) (err error) {

@@ -22,6 +22,8 @@ func HomeController(c *fiber.Ctx) error {
 		return c.Redirect("/login")
 	}
 
+	userName := sess.Get("name_user")
+
 	// Ambil pesan flash error
 	flashError := sess.Get("flash_error")
 
@@ -73,5 +75,6 @@ func HomeController(c *fiber.Ctx) error {
 		"isIndex":       1,
 		"Dashboard":     dashboard,
 		"menus":         menus,
+		"Name":          userName,
 	})
 }

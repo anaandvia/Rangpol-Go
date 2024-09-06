@@ -24,6 +24,8 @@ func PeminjamanFormController(c *fiber.Ctx) error {
 	if userID == nil {
 		return c.Redirect("/login")
 	}
+	userName := sess.Get("name_user")
+
 	var user models.User
 	if userID != "" {
 		if err := database.DBConn.Where("id_user = ?", userID).Find(&user).Error; err != nil {
@@ -69,6 +71,7 @@ func PeminjamanFormController(c *fiber.Ctx) error {
 		"menus":       menus,
 		"Dashboard":   "Peminjaman Ruangan",
 		"SelectedID":  uint(idRoom),
+		"Name":        userName,
 	})
 }
 

@@ -85,13 +85,33 @@
 </div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-    var selectElement = document.getElementById("id_room");
-    var selectedValue = selectElement.value;
-    console.log("Selected Room ID:", selectedValue);
+    document.addEventListener('DOMContentLoaded', function () {
+        const tglAcaraInput = document.getElementById('tgl_acara');
+        const tglAkhirAcaraInput = document.getElementById('tgl_akhir_acara');
 
-    // If using JavaScript to set form values or hidden fields, ensure correct assignment
-});
+        tglAcaraInput.addEventListener('change', function () {
+            // Get the value of tgl_acara
+            const tglAcaraValue = tglAcaraInput.value;
+
+            // Set the min attribute of tgl_akhir_acara to ensure it's later than tgl_acara
+            tglAkhirAcaraInput.min = tglAcaraValue;
+        });
+
+        tglAkhirAcaraInput.addEventListener('change', function () {
+            const tglAcaraValue = tglAcaraInput.value;
+            const tglAkhirAcaraValue = tglAkhirAcaraInput.value;
+
+            // Check if the end date is earlier than the start date
+            if (tglAkhirAcaraValue < tglAcaraValue) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid Date',
+                    text: 'Tanggal akhir acara harus lebih besar dari tanggal acara.',
+                });
+                tglAkhirAcaraInput.value = '';
+            }
+        });
+    });
 </script>
 {{template "footer" }}
 {{ end }}

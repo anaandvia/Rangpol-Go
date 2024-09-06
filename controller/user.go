@@ -68,6 +68,7 @@ func LoginPostController(c *fiber.Ctx) error {
 	// Set session user_id after successful login
 	sess, _ := middleware.GetSessionStore().Get(c)
 	sess.Set("user_id", user.Id_user)
+	sess.Set("name_user", user.Name_user)
 	sess.Save()
 
 	return c.Redirect("/")
