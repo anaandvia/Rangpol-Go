@@ -25,7 +25,7 @@ func LantaiMiddleware() fiber.Handler {
 
 func GetMenu(c *fiber.Ctx) error {
 	var menus []models.Menu
-	if err := database.DBConn.Find(&menus).Error; err != nil {
+	if err := database.DBConn.Find(&menus).Order("Urutan asc").Error; err != nil {
 		log.Println("Error retrieving menus:", err)
 		return c.Status(fiber.StatusInternalServerError).SendString("Error retrieving menus")
 	}
