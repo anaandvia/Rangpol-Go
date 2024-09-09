@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"rangpol/middleware"
 
 	"github.com/gofiber/fiber/v2"
@@ -29,5 +30,10 @@ func LoginFormController(c *fiber.Ctx) error {
 
 func RegisterFormController(c *fiber.Ctx) error {
 	// Render the template using Fiber's render method
-	return c.Render("register", nil)
+	err := c.Render("daftar", nil)
+	if err != nil {
+		fmt.Println("Error rendering template:", err)
+		return err
+	}
+	return nil
 }

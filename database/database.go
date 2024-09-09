@@ -32,7 +32,7 @@ func ConnectDB() {
 
 	// auto migration
 	// Auto migration for multiple models
-	db.AutoMigrate(&models.User{}, &models.Blog{}, &models.Room{}, &models.Lantai{}, &models.DetailRoom{}, &models.Peminjaman{}, &models.DetailPeminjaman{}, &models.Fasilitas{}, &models.FasilitasRoom{}, &models.Jurusan{}, &models.Pengembalian{}, &models.Menu{})
+	db.AutoMigrate(&models.Menu{}, &models.Usermenu{}, &models.User{}, &models.Blog{}, &models.Room{}, &models.Lantai{}, &models.DetailRoom{}, &models.Peminjaman{}, &models.DetailPeminjaman{}, &models.Fasilitas{}, &models.FasilitasRoom{}, &models.Jurusan{}, &models.Pengembalian{})
 
 	DBConn = db
 }

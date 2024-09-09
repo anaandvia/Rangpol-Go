@@ -25,21 +25,12 @@ func LantaiMiddleware() fiber.Handler {
 
 func GetMenu(c *fiber.Ctx) error {
 	var menus []models.Menu
-	if err := database.DBConn.Find(&menus).Order("Urutan asc").Error; err != nil {
+	if err := database.DBConn.Preload("Children").Order("urutan ASC").Find(&menus).Order("Urutan asc").Error; err != nil {
 		log.Println("Error retrieving menus:", err)
 		return c.Status(fiber.StatusInternalServerError).SendString("Error retrieving menus")
 	}
 
-	groupedMenus := make(map[string][]models.Menu)
-	if len(menus) == 0 {
-		log.Println("No menus found in database")
-	} else {
-		for _, menu := range menus {
-			groupedMenus[menu.Parent] = append(groupedMenus[menu.Parent], menu)
-		}
-	}
-
 	// log.Println("Grouped Menus:", groupedMenus)
-	c.Locals("menus", groupedMenus)
+	c.Locals("menus", menus)
 	return c.Next()
 }

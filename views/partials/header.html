@@ -61,35 +61,35 @@
                 Master
             </div>
 
-            {{range $parent, $menus := .menus}}
-            {{if eq (index (index $menus 0).Jenis) 1}}
-                <li class="nav-item">
-                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities{{ (index (index $menus 0).Id_menu) }}" aria-expanded="true" aria-controls="collapseUtilities">
-                        <i class="{{ (index (index $menus 0).Icon_class) }}"></i>
-                        <span>{{ $parent }}</span>
-                    </a>
-                    <div id="collapseUtilities{{ (index (index $menus 0).Id_menu) }}" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
-                        <div class="bg-white py-2 collapse-inner rounded">
-                            <h6 class="collapse-header">{{ $parent }}</h6>
-                            {{range $menus}}
-                                <a class="collapse-item" href="{{.Url}}">{{.Menu}}</a>
-                            {{end}}
-                        </div>
+            {{range .menus}}
+            {{ if (gt (len .Children) 0) }}
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse"
+                    data-target="#collapseUtilities{{ .Id_menu }}" aria-expanded="true"
+                    aria-controls="collapseUtilities">
+                    <i class="{{ .Icon_class }}"></i>
+                    <span>{{ .Menu }}</span>
+                </a>
+                <div id="collapseUtilities{{ .Id_menu }}" class="collapse" aria-labelledby="headingUtilities"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">{{ .Menu }}</h6>
+                        {{range .Children}}
+                        <a class="collapse-item" href="{{.Url}}">{{.Menu}}</a>
+                        {{end}}
                     </div>
-                </li>
-            {{else}}
-                {{range $menus}}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{.Url}}">
-                            <i class="{{.Icon_class}}"></i>
-                            <span>{{ .Menu }}</span>
-                        </a>
-                    </li>
-                {{end}}
-            {{end}}</li>
-        {{end}}
-            
-            
+                </div>
+            </li>
+            {{ else if eq .Id_Parent 0 }}
+            <li class="nav-item">
+                <a class="nav-link" href="{{.Url}}">
+                    <i class="{{.Icon_class}}"></i>
+                    <span>{{ .Menu }}</span>
+                </a>
+            </li>
+            {{ end }}
+            {{ end }}
+
 
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">

@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"rangpol/database"
 	"rangpol/middleware"
 	"rangpol/models"
@@ -42,8 +43,7 @@ func HomeController(c *fiber.Ctx) error {
 	idLantai := c.Query("id")
 
 	floors := c.Locals("floors").([]models.Lantai)
-	menus := c.Locals("menus").(map[string][]models.Menu)
-
+	menus := c.Locals("menus").([]models.Menu)
 	dashboard := "Dashboard"
 	// Ambil data ruangan dari database
 	var rooms []models.Room
@@ -65,6 +65,7 @@ func HomeController(c *fiber.Ctx) error {
 	c.Set("Expires", "0")
 
 	// Render halaman dengan data yang diperlukan
+	fmt.Println("menus : ", menus)
 
 	return c.Render("index", fiber.Map{
 		"flash_error":   flashError,
