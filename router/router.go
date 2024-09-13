@@ -15,30 +15,30 @@ func SetupRouters(app *fiber.App) {
 	//update => put
 	//delete => delete
 
+	// ------------------------index-------------------------------
 	app.Get("/", controller.HomeController)
-	// app.Get("/login", controller.LoginController)
-	// app.Post("/login", middleware.Authenticate)
-	// app.Get("/login", controller.LoginFormController) // Route for login form
-	// app.Post("/login", controller.LoginUser)
-
+	// ------------------------------------------------------------
+	// --------------------- Registration -------------------------
+	app.Get("/register", controller.RegisterFormController)
+	app.Post("/register", controller.RegisterController)
+	// ------------------------------------------------------------
+	// ------------------ authentication ---------------------------
 	app.Get("/login", middleware.RedirectIfAuthenticated, controller.LoginFormController)
-	app.Get("/detail_room", controller.RoomDetailController)
-	app.Get("/peminjaman", controller.PeminjamanFormController)
-	app.Post("/borang", controller.PeminjamanController)
-	app.Get("/kembalikan", controller.PengembalianFormController)
-	app.Post("/kembalikan", controller.PengembalianController)
-
-	// Other routes
 	app.Post("/login", controller.LoginPostController)
 	app.Get("/logout", controller.LogoutController)
-	app.Get("/admin", controller.AdminPage)
-	app.Get("/test", controller.TestController)
-	app.Get("/history", controller.HistoryPeminjamanController)
+	// ------------------------------------------------------------
+	// ------------------ Peminjaman ---------------------------
+	app.Get("/peminjaman", middleware.CheckPrivileges("view", "7"), controller.PeminjamanFormController)
+	app.Post("/borang", middleware.CheckPrivileges("add", "7"), controller.PeminjamanController)
+	// ------------------------------------------------------------
+	// ------------------ Ruangan ---------------------------
+	app.Get("/detail_room", middleware.CheckPrivileges("view", "2"), controller.RoomDetailController)
+	// ------------------------------------------------------------
+	// ------------------ Pengembalian ---------------------------
+	app.Get("/kembalikan", middleware.CheckPrivileges("view", "8"), controller.PengembalianFormController)
+	app.Post("/kembalikan", middleware.CheckPrivileges("edit", "8"), controller.PengembalianController)
+	// ------------------------------------------------------------
 
-	app.Get("/register", controller.RegisterFormController) // Route for registration form
-	app.Post("/register", controller.RegisterController)
-	// app.Post("/", controller.BlogCreate)
-	// app.Put("/:id", controller.BlogUpdate)
-	// app.Delete("/:id", controller.BlogDelete)
+	// app.Get("/peminjaman", controller.PeminjamanFormController)
 
 }

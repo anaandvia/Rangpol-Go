@@ -43,7 +43,8 @@ func PeminjamanFormController(c *fiber.Ctx) error {
 	// Get the room ID from the query parameters
 	idRoomStr := c.Query("id")
 	if idRoomStr == "" {
-		return c.Status(fiber.StatusBadRequest).SendString("Room ID is required")
+		// return c.Status(fiber.StatusBadRequest).SendString("Room ID is required")
+		idRoomStr = "0"
 	}
 
 	idRoom, err := strconv.ParseUint(idRoomStr, 10, 32) // Konversi string ke uint
