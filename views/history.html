@@ -9,51 +9,54 @@
 <div class="row">
     <!-- Content Row -->
     <div class="col-lg-12">
-    <div class="card shadow mb-4" style="margin-top: 30px;">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0"
-                    style="background-color: white; color:black">
-                    <thead>
-                        <tr>
-                            <th>Nama Kegiatan</th>
-                            <th>Tgl Kegiatan</th>
-                            <th>Tgl Pengembalian</th>
-                            <th>Status</th>
-                            <th>Cetak Bukti</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {{range .Peminjaman}}
-                        <tr>
-                            <td>{{.NamaKegiatan}}</td>
-                            <td>Tgl Acara : {{.TglAcaraDay}}, {{.TglAcaraFormatted}} <br> Tgl Akhir Acara : {{.TglAkhirAcaraDay}}, {{.TglAkhirAcaraFormatted}}</td>
-                            <td>
-                                {{if .Pengembalian}}
-                                {{range .Pengembalian}}
-                                    {{if .TglPengembalian.IsZero }}
-                                    {{ else }}
-                                    {{.TglPengembalian}} <!-- Assuming `TglPengembalian` is a field in `Pengembalian` -->
-                                    {{ end }}
-                                {{end}}
-                                {{else}}
-                                No Return Date
-                                {{end}}
-                            </td>
-                            <td>
-                                {{if eq .Status 1}}<p style='color:green;'>Disetujui</p>{{end}}
-                                {{if eq .Status 2}}<p style='color:red;'>Ditolak</p>{{end}}
-                                {{if eq .Status 0}}<p style='color:grey;'>Diajukan</p>{{end}}
-                            </td>
-                            <td>{{if eq .Status 1}}<a href="/">Cetak Bukti</a>{{ else }} {{ end }}</td>
-                        </tr>
-                        {{end}}
-                    </tbody>
-                </table>
+        <div class="card shadow mb-4" style="margin-top: 30px;">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0"
+                        style="background-color: white; color:black">
+                        <thead>
+                            <tr>
+                                <th>Nama Kegiatan</th>
+                                <th>Ruangan</th>
+                                <th>Tgl Kegiatan</th>
+                                <th>Tgl Pengembalian</th>
+                                <th>Status</th>
+                                <th>Cetak Bukti</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{range .Peminjaman}}
+                            <tr>
+                                <td>{{.NamaKegiatan}}</td>
+                                <td>{{ .Room.No_room}} - {{ .Room.Name_room  }}</td>
+                                <td>Tgl Acara : {{.TglAcaraDay}}, {{.TglAcaraFormatted}} <br> Tgl Akhir Acara :
+                                    {{.TglAkhirAcaraDay}}, {{.TglAkhirAcaraFormatted}}</td>
+                                <td>
+                                    {{if eq .Status 1}}
+                                    <a href="/kembalikan?id={{ .IdPeminjaman }}">{{ if eq (index .Pengembalian 0).StatusKembali 1 }}Lihat Pengembalian{{ else }}Kembalikan{{ end }}</a>
+                                    {{else}}
+                                        {{range .Pengembalian}}
+                                            {{if not .TglPengembalian.IsZero}}
+                                            {{.TglPengembalianDay}}, {{.TglPengembalianFormatted}}
+                                            {{end}}
+                                        {{end}}
+                                    {{end}}
+                                </td>
+                                <td>
+                                    {{if eq .Status 1}}<p style='color:green;'>Disetujui</p>{{end}}
+                                    {{if eq .Status 2}}<p style='color:red;'>Ditolak</p>{{end}}
+                                    {{if eq .Status 0}}<p style='color:grey;'>Diajukan</p>{{end}}
+                                    {{if eq .Status 3}}<p style='color:blue;'>Selesai</p>{{end}}
+                                </td>
+                                <td>{{if eq .Status 1}}<a href="/">Cetak Bukti</a>{{ else }} {{ end }}</td>
+                            </tr>
+                            {{end}}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-    </div>    
 </div>
 
 </div>

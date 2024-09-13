@@ -58,7 +58,7 @@ func PeminjamanFormController(c *fiber.Ctx) error {
 	}
 
 	floors := c.Locals("floors").([]models.Lantai)
-	menus := c.Locals("menus").(map[string][]models.Menu)
+	menus := c.Locals("menus").([]models.Menu)
 	// log.Printf("Rooms Data: %+v\n", rooms)
 
 	// Render the detail page with the room data
@@ -165,7 +165,7 @@ func PeminjamanController(c *fiber.Ctx) error {
 	// Insert into pengembalian
 	pengembalian := models.Pengembalian{
 		IdPeminjaman:    uint(idPeminjaman),
-		StatusKembali:   false,
+		StatusKembali:   0,
 		TglPengembalian: time.Time{},
 	}
 	if err := db.Create(&pengembalian).Error; err != nil {

@@ -25,6 +25,8 @@ func SetupRouters(app *fiber.App) {
 	app.Get("/detail_room", controller.RoomDetailController)
 	app.Get("/peminjaman", controller.PeminjamanFormController)
 	app.Post("/borang", controller.PeminjamanController)
+	app.Get("/kembalikan", controller.PengembalianFormController)
+	app.Post("/kembalikan", controller.PengembalianController)
 
 	// Other routes
 	app.Post("/login", controller.LoginPostController)

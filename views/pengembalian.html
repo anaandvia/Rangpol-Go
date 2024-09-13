@@ -1,0 +1,139 @@
+{{ define "pengembalian" }}
+{{template "header" .}}
+
+{{- $isReadOnly := (index .Peminjaman.Pengembalian 0).StatusKembali -}}
+
+<div class="row" style="text-align:left;">
+    <div class="col-lg-6">
+        <form action="/kembalikan" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="id_pengembalian" id="id_pengembalian"
+                value="{{(index .Peminjaman.Pengembalian 0).Id}}">
+            <input type="hidden" name="id_peminjaman" id="id_peminjaman" value="{{ .Peminjaman.IdPeminjaman}}">
+            <div class="form-group">
+                <label for="nama_kegiatan">Nama Kegiatan</label>
+                <input type="text" class="form-control" id="nama_kegiatan" name="nama_kegiatan"
+                    placeholder="Nama Kegiatan" value="{{ .Peminjaman.NamaKegiatan }}" required readonly>
+            </div>
+            <div class="form-group">
+                <label for="id_room">Nama Ruangan</label>
+                <input type="text" class="form-control" id="id_room" name="id_room"
+                    value="{{ .Peminjaman.Room.No_room}} - {{ .Peminjaman.Room.Name_room}}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="tgl_acara">Tgl Kegiatan</label>
+                <input class="form-control form_datetime" type="datetime-local" id="tgl_acara" name="tgl_acara" step="1"
+                    value="{{ .TglAcara }}" required readonly>
+            </div>
+            <div class="form-group">
+                <label for="tgl_pengembalian">Tgl Pengembalian</label>
+                <input class="form-control form_datetime" type="datetime-local" id="tgl_pengembalian"
+                    name="tgl_pengembalian" step="1" required {{ if eq $isReadOnly 1 }} value="{{ .TglPengembalian }}"
+                    readonly{{ end }}>
+            </div>
+            <div class="form-group">
+                <label for="foto_b">Upload Foto Kegiatan {{ $isReadOnly }}</label>
+                <input type="file" class="form-control-file" id="foto_b" name="foto_b" accept="image/*" required
+                    {{ if eq $isReadOnly 1 }} disabled {{ end }}>
+                <br>
+                {{ if eq $isReadOnly 1 }}
+                <img id="imageKembali" src="./img/pengembalian/{{ (index .Peminjaman.Pengembalian 0).FotoB }}"
+                    alt="Image Kembali" style="max-width: 50%; height: auto;"> {{ end }}
+                <img id="imagePreview" src="#" alt="Image Preview" style="display: none; max-width: 50%; height: auto;">
+                <div id="error-message" style="color: red; display: none;">Invalid file format. Please select a valid
+                    image.</div>
+            </div>
+            <div class="form-group">
+                <label for="keterangan">Umpan Balik</label>
+                <textarea class="form-control" id="keterangan" name="keterangan" rows="3" placeholder="Keterangan"
+                    required {{ if eq $isReadOnly 1 }} readonly{{ end }}></textarea>
+            </div>
+    </div>
+    <div class="col-lg-6">
+        <input type="hidden" class="form-control" id="id_user" name="id_user" value="{{ .Peminjaman.User.Id_user}}"
+            readonly>
+        <div class="form-group">
+            <label for="nim">NIM</label>
+            <input type="text" class="form-control" id="nim" name="nim" value="{{ .Peminjaman.User.Nim}}" readonly>
+        </div>
+        <div class="form-group">
+            <label for="nama">Nama</label>
+            <input type="text" class="form-control" id="name_user" name="name_user"
+                value="{{ .Peminjaman.User.Name_user}}" readonly>
+        </div>
+        <div class="form-group"></div>
+        <label for="email">Email</label>
+        <input type="text" class="form-control" id="email" name="email" value="{{ .Peminjaman.User.Email}}" readonly>
+    </div>
+    {{ if ne $isReadOnly 1 }}
+    <button type="submit" class="btn btn-warning">Kembalikan</button>
+    {{ end }}
+    </form>
+</div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const tglAcaraInput = document.getElementById('tgl_acara');
+        const tglAkhirAcaraInput = document.getElementById('tgl_pengembalian');
+
+        tglAcaraInput.addEventListener('change', function () {
+            // Get the value of tgl_acara
+            const tglAcaraValue = tglAcaraInput.value;
+
+            // Set the min attribute of tgl_pengembalian to ensure it's later than tgl_acara
+            tglAkhirAcaraInput.min = tglAcaraValue;
+        });
+
+        tglAkhirAcaraInput.addEventListener('change', function () {
+            const tglAcaraValue = tglAcaraInput.value;
+            const tglAkhirAcaraValue = tglAkhirAcaraInput.value;
+
+            // Check if the end date is earlier than the start date
+            if (tglAkhirAcaraValue < tglAcaraValue) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid Date',
+                    text: 'Tanggal pengembalian ruangan harus lebih besar dari tanggal acara.',
+                });
+                tglAkhirAcaraInput.value = '';
+            }
+        });
+    });
+    document.getElementById('foto_b').addEventListener('change', function (event) {
+        var input = event.target;
+        var file = input.files[0];
+
+        // Define allowed file types
+        var allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+
+        // Get the error message and image preview elements
+        var errorMessage = document.getElementById('error-message');
+        var imagePreview = document.getElementById('imagePreview');
+
+        if (file) {
+            if (allowedTypes.includes(file.type)) {
+                // File type is valid, proceed to show preview
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.display = 'block'; // Show the image
+                    errorMessage.style.display = 'none'; // Hide the error message
+                };
+                reader.readAsDataURL(file);
+            } else {
+                // File type is invalid, clear the file input and hide the image preview
+                input.value = ''; // Clear file input
+                imagePreview.src = '#'; // Hide the image
+                imagePreview.style.display = 'none'; // Hide the image preview
+                errorMessage.style.display = 'block'; // Show error message
+            }
+        } else {
+            // No file selected, hide image preview and error message
+            imagePreview.src = '#';
+            imagePreview.style.display = 'none';
+            errorMessage.style.display = 'none';
+        }
+    });
+</script>
+{{template "footer" }}
+{{ end }}

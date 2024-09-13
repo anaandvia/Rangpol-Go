@@ -26,7 +26,11 @@ func HistoryPeminjamanController(c *fiber.Ctx) error {
 
 	// Ambil pesan flash error jika ada
 	flashError := sess.Get("flash_error")
+	flashSuccess := sess.Get("flash_success")
+
 	sess.Delete("flash_error")
+	sess.Delete("flash_success")
+
 	if err := sess.Save(); err != nil {
 		return c.Status(fiber.StatusInternalServerError).SendString("Error saving session")
 	}
@@ -47,21 +51,29 @@ func HistoryPeminjamanController(c *fiber.Ctx) error {
 	for i := range peminjaman {
 		peminjaman[i].TglAcaraFormatted = peminjaman[i].TglAcara.Format("02-01-2006 jam 15:04")
 		peminjaman[i].TglAkhirAcaraFormatted = peminjaman[i].TglAkhirAcara.Format("02-01-2006 jam 15:04")
+		peminjaman[i].TglAkhirAcaraFormatted = peminjaman[i].TglAkhirAcara.Format("02-01-2006 jam 15:04")
 
 		peminjaman[i].TglAcaraDay = helper.GetIndonesianDay(peminjaman[i].TglAcara.Weekday())
 		peminjaman[i].TglAkhirAcaraDay = helper.GetIndonesianDay(peminjaman[i].TglAkhirAcara.Weekday())
+
+		for j := range peminjaman[i].Pengembalian {
+			peminjaman[i].Pengembalian[j].TglPengembalianFormatted = peminjaman[i].Pengembalian[j].TglPengembalian.Format("02-01-2006 jam 15:04")
+			peminjaman[i].Pengembalian[j].TglPengembalianDay = helper.GetIndonesianDay(peminjaman[i].Pengembalian[j].TglPengembalian.Weekday())
+		}
+
 	}
 
 	floors := c.Locals("floors").([]models.Lantai)
-	menus := c.Locals("menus").(map[string][]models.Menu)
+	menus := c.Locals("menus").([]models.Menu)
 
 	// Render the detail page with the room data
 	return c.Render("history", fiber.Map{
-		"Title":       "History",
-		"flash_error": flashError,
-		"Peminjaman":  peminjaman,
-		"Floors":      floors,
-		"menus":       menus,
-		"Name":        userName,
+		"Title":         "History",
+		"flash_error":   flashError,
+		"flash_success": flashSuccess,
+		"Peminjaman":    peminjaman,
+		"Floors":        floors,
+		"menus":         menus,
+		"Name":          userName,
 	})
 }
