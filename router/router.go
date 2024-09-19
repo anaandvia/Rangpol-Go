@@ -46,6 +46,9 @@ func SetupRouters(app *fiber.App) {
 	// ------------------Superadmin---------------------------------
 	// -------------------------- Data User ------------------------
 	app.Get("/admin/datauser", middleware.CheckPrivileges("view", "11"), controller.DataUserController)
+	app.Post("/admin/datauser/tambah", middleware.CheckPrivileges("create", "11"), controller.CreateUserController)
+	app.Post("/admin/datauser/delete/:id", middleware.CheckPrivileges("del", "11"), controller.DeleteUserController)
+	app.Post("/admin/datauser/update/:id", middleware.CheckPrivileges("edit", "11"), controller.UpdateUserController)
 	// -------------------------------------------------------------
 	// ----------------------- Data Ruangan ------------------------
 	app.Get("/admin/dataruangan", middleware.CheckPrivileges("view", "9"), controller.DataRuanganController)
@@ -58,6 +61,10 @@ func SetupRouters(app *fiber.App) {
 	// -------------------------------------------------------------
 	// ----------------------- Data Admin --------------------------
 	app.Get("/admin/dataadmin", middleware.CheckPrivileges("view", "10"), controller.DataAdminController)
+	app.Post("/admin/dataadmin/tambah", middleware.CheckPrivileges("create", "10"), controller.CreateAdminController)
+	app.Post("/admin/dataadmin/delete/:id", middleware.CheckPrivileges("del", "10"), controller.DeleteAdminController)
+	app.Post("/admin/dataadmin/update/:id", middleware.CheckPrivileges("edit", "10"), controller.UpdateAdminController)
+
 	// -------------------------------------------------------------
 
 	// app.Get("/peminjaman", controller.PeminjamanFormController)

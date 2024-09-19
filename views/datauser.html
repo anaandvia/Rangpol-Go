@@ -1,9 +1,249 @@
 {{ define "datauser" }}
 {{template "header" .}}
 
-<h2>Data User</h2>
-</div>
-{{template "footer" }}
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <!-- <h1 class="text-white">Data User</h1> -->
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <form class="form-inline my-2 my-lg-0 ml-auto">
+                <a href="#" data-target="#ModalTambah" data-toggle="modal" class="btn btn-warning mb-2 btndata">
+                    <i class="fas fa-plus-circle mr-2"></i>TAMBAH DATA USER</a>&nbsp;
+                <a href="/admin/datauser/print" class="btn btn-warning mb-2 btndata">
+                    <i class="fas fa-print mr-2"></i>CETAK DATA USER</a>
+
+            </form>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered" id="dataTable" width="100%" cellspacing="0"
+                    style="color: black;">
+                    <thead>
+                        <tr>
+                            <th scope="col">NO</th>
+                            <th scope="col">NIDN / NIM</th>
+                            <th scope="col">NAMA</th>
+                            <th scope="col">ROLE</th>
+                            <th scope="col">EMAIL</th>
+                            <th scope="col">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{ $index := 1 }}
+                        {{range .User}}
+                        <tr>
+                            <td>{{ $index}}</td>
+                            <td>{{.Nim}}</td>
+                            <td>{{.Name_user}}</td>
+                            <td>
+                                {{if eq .Level 1}}
+                                    Peminjam
+                                {{else if eq .Level 2}}
+                                    Admin
+                                {{else}}
+                                    Unknown
+                                {{end}}
+                            </td>
+                            <td>{{.Email}}</td>
+                            <td>
+                                <a href="#" data-target="#EditUser{{.Id_user}}" data-toggle="modal"
+                                    data-id="{{.Id_user}}">
+                                    <i class="fas fa-edit bg-success p-2 text-white rounded"></i>
+                                </a>
+                                <a href="#" data-target="#DeleteUser{{.Id_user}}" data-toggle="modal">
+                                    <i class="fas fa-trash-alt bg-danger p-2 text-white rounded"></i>
+                                </a>
+                            </td>
+                            <div class="modal fade" id="DeleteUser{{.Id_user}}" tabindex="-1" role="dialog"
+                                aria-labelledby="DeleteUserLabel{{.Id_user}}" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="label">Hapus Data User
+                                            </h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="/admin/datauser/delete/{{ .Id_user }}" method="post">
+                                                Apakah anda yakin ingin menghapus data <b>
+                                                    {{ .Name_user}}</b> ?
+                                                <div class="modal-footer">
+                                                    <input type="hidden" name="deladm" id="deladm"
+                                                        value="{{ .Id_user}}">
+                                                    <button type="submit" name="btndeladm"
+                                                        class="btn btn-warning">DELETE</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /ModalDelete -->
+                        </tr>
+                        <!-- Modal Edit -->
+                        <div class="modal fade" id="EditUser{{.Id_user}}" tabindex="-1" role="dialog"
+                            aria-labelledby="EditUserLabel{{.Id_user}}" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="label">
+                                            Ubah
+                                            Data
+                                            User</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="/admin/datauser/update/{{ .Id_user }}" method="post">
+                                            <input type="hidden" name="id_user" id="id_user" value="{{ .Id_user }}">
+                                            <div class="form-row">
+                                                <div class="form-group col-md-6">
+                                                    <label>NIDN / NIM</label>
+                                                    <input type="text" name="nim" class="form-control" id="nim"
+                                                        value="{{ .Nim }}">
+                                                </div>
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="form-group col-md-6">
+                                                    <label>NAMA</label>
+                                                    <input type="text" name="name_user" class="form-control"
+                                                        id="name_user" value="{{ .Name_user}}">
+                                                </div>
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="form-group col-md-6">
+                                                    <label for="level">ROLE</label>
+                                                    <select class="form-control" id="level" name="level" required>
+                                                        <option value="1" {{if eq .Level 1}}selected{{end}}>Peminjam
+                                                        </option>
+                                                        <option value="2" {{if eq .Level 2}}selected{{end}}>Admin
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="form-group col-md-6">
+                                                    <label>EMAIL</label>
+                                                    <input type="text" name="email" class="form-control" id="email"
+                                                        value="{{ .Email }}">
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn btn-warning">SIMPAN</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- edit -->
+                        {{end}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Delete -->
+
+    <!-- Modal Tambah -->
+    <div class="modal fade" id="ModalTambah" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="label">Input New Data</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/admin/datauser/tambah" method="post">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>NIDN / NIK</label>
+                                <input type="text" name="nim" class="form-control" id="nim" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>NAMA </label>
+                                <input type="text" name="name_user" class="form-control" id="name_user" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="level">Level</label>
+                                <select class="form-control" id="level" name="level" required>
+                                    <option value="1">Peminjam</option>
+                                    <option value="2">User</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>EMAIL</label>
+                                <input type="text" name="email" class="form-control" id="email" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-warning">SIMPAN</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{template "footer" }}
+
+    <script type="text/javascript" class="init">
+        $(document).ready(function() {
+        // $('#dataTable').DataTable({
+        //     "paging": true,
+        //     "ordering": true,
+        //     "info": true,
+        //     dom: 'Bfrtip',
+        //     buttons: [
+        //         {
+        //             extend: 'excelHtml5',
+        //             className: 'btn-success bg-success',
+        //             title: 'Data User',
+        //             exportOptions: {
+        //                 columns: [0, 1, 2, 3, 4, 5, 6]
+        //             }
+        //         },
+        //         {
+        //             extend: 'pdfHtml5',
+        //             className: 'btn-danger bg-danger',
+        //             title: 'Data User',
+        //             download: 'open',
+        //             exportOptions: {
+        //                 columns: [0, 1, 2, 3, 4, 5, 6]
+        //             }
+        //         }
+        //     ]
+        // });
+        var table = $('#dataTable').DataTable({
+        pageLength : 5,
+        lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'Semua']],
+        order: [[1, 'desc']],
+        language: {
+                lengthMenu: "Menampilkan _MENU_ data",
+                zeroRecords: "Tidak ada data",
+                info: "Halaman _PAGE_ dari _PAGES_",
+                infoFiltered: "(difilter dari _MAX_ data)",
+                search: "Pencarian :",
+                paginate: {
+                    previous: "Sebelumnya",
+                    next: "Selanjutnya",
+                }
+            },
+    })
+    });
+    </script>
+
 </body>
 
 </html>

@@ -2,19 +2,14 @@ package controller
 
 import (
 	"fmt"
+	"rangpol/database"
 	"rangpol/middleware"
 	"rangpol/models"
 
 	"github.com/gofiber/fiber/v2"
 )
 
-// AdminPage handles the /admin route
 func DataRuanganController(c *fiber.Ctx) error {
-	// if err := middleware.RequireUserLevel(c, 1); err != nil {
-	// 	return err
-	// }
-
-	// Serve the admin page
 	// Ambil sesi pengguna
 	sess, err := middleware.GetSessionStore().Get(c)
 	if err != nil {
@@ -46,13 +41,20 @@ func DataRuanganController(c *fiber.Ctx) error {
 
 	menus := c.Locals("menus").([]models.Menu)
 
+	var rooms []models.Room
+	if err := database.DBConn.Find(&rooms).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).SendString("Error retrieving floors")
+	}
+
 	// Set header untuk menonaktifkan caching pada halaman ini
 	c.Set("Cache-Control", "no-store")
 	c.Set("Pragma", "no-cache")
 	c.Set("Expires", "0")
 
 	// Render halaman dengan data yang diperlukan
-	fmt.Println("menus : ", menus)
+	fmt.Println("menus : ", rooms)
+
+	// add := helper.add()
 
 	return c.Render("dataruangan", fiber.Map{
 		"isIndex":       1,
@@ -62,5 +64,6 @@ func DataRuanganController(c *fiber.Ctx) error {
 		"Title":         "Data Ruangan",
 		"menus":         menus,
 		"Name":          userName,
+		"Room":          rooms,
 	})
 }

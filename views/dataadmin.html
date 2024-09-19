@@ -36,7 +36,15 @@
                             <td>{{ $index}}</td>
                             <td>{{.Nim}}</td>
                             <td>{{.Name_user}}</td>
-                            <td>{{.Level}}</td>
+                            <td>
+                                {{if eq .Level 1}}
+                                    Peminjam
+                                {{else if eq .Level 2}}
+                                    Admin
+                                {{else}}
+                                    Unknown
+                                {{end}}
+                            </td>
                             <td>{{.Email}}</td>
                             <td>
                                 <a href="#" data-target="#EditAdmin{{.Id_user}}" data-toggle="modal"
@@ -59,7 +67,7 @@
                                             </button>
                                         </div>
                                         <div class="modal-body">
-                                            <form action="/admin/dataadmin/del" method="post">
+                                            <form action="/admin/dataadmin/delete/{{ .Id_user }}" method="post">
                                                 Apakah anda yakin ingin menghapus data <b>
                                                     {{ .Name_user}}</b> ?
                                                 <div class="modal-footer">
@@ -89,7 +97,7 @@
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <form action="/admin/dataadmin/update" method="post">
+                                        <form action="/admin/dataadmin/update/{{ .Id_user }}" method="post">
                                             <input type="hidden" name="id_user" id="id_user" value="{{ .Id_user }}">
                                             <div class="form-row">
                                                 <div class="form-group col-md-6">
@@ -162,7 +170,7 @@
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label>NAMA </label>
-                                <input type="text" name="nama_user" class="form-control" id="nama_user">
+                                <input type="text" name="name_user" class="form-control" id="name_user">
                             </div>
                         </div>
                         <div class="form-row">
@@ -192,31 +200,47 @@
 
     <script type="text/javascript" class="init">
         $(document).ready(function() {
-        $('#dataTable').DataTable({
-            "paging": true,
-            "ordering": true,
-            "info": true,
-            dom: 'Bfrtip',
-            buttons: [
-                {
-                    extend: 'excelHtml5',
-                    className: 'btn-success bg-success',
-                    title: 'Data Admin',
-                    exportOptions: {
-                        columns: [0, 1, 2, 3, 4, 5, 6]
-                    }
-                },
-                {
-                    extend: 'pdfHtml5',
-                    className: 'btn-danger bg-danger',
-                    title: 'Data Admin',
-                    download: 'open',
-                    exportOptions: {
-                        columns: [0, 1, 2, 3, 4, 5, 6]
-                    }
+        // $('#dataTable').DataTable({
+        //     "paging": true,
+        //     "ordering": true,
+        //     "info": true,
+        //     dom: 'Bfrtip',
+        //     buttons: [
+        //         {
+        //             extend: 'excelHtml5',
+        //             className: 'btn-success bg-success',
+        //             title: 'Data Admin',
+        //             exportOptions: {
+        //                 columns: [0, 1, 2, 3, 4, 5, 6]
+        //             }
+        //         },
+        //         {
+        //             extend: 'pdfHtml5',
+        //             className: 'btn-danger bg-danger',
+        //             title: 'Data Admin',
+        //             download: 'open',
+        //             exportOptions: {
+        //                 columns: [0, 1, 2, 3, 4, 5, 6]
+        //             }
+        //         }
+        //     ]
+        // });
+        var table = $('#dataTable').DataTable({
+        pageLength : 5,
+        lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'Semua']],
+        order: [[1, 'desc']],
+        language: {
+                lengthMenu: "Menampilkan _MENU_ data",
+                zeroRecords: "Tidak ada data",
+                info: "Halaman _PAGE_ dari _PAGES_",
+                infoFiltered: "(difilter dari _MAX_ data)",
+                search: "Pencarian :",
+                paginate: {
+                    previous: "Sebelumnya",
+                    next: "Selanjutnya",
                 }
-            ]
-        });
+            },
+    })
     });
     </script>
 

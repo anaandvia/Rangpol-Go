@@ -12,5 +12,6 @@ type User struct {
 	Code        string       `json:"code" gorm:"not null"`
 	Level       uint         `json:"level" gorm:"not null;column:level"`
 	Grup        uint         `json:"grup" gorm:"not null;column:grup"`
+	Dlt         int          `gorm:"default:0"`
 	Peminjaman  []Peminjaman `gorm:"foreignKey:IdUser;references:Id_user"` // relasi satu-ke-banyak
 }
