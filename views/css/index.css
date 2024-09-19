@@ -8,6 +8,10 @@
     text-decoration: none;
 }
 
+.rooms {
+    margin-bottom: 2%;
+}
+
 .rooms a {
     color: black;
 }

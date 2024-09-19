@@ -26,13 +26,28 @@ func LantaiMiddleware() fiber.Handler {
 }
 
 func GetMenu(c *fiber.Ctx) error {
+	sess, err := GetSessionStore().Get(c)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).SendString("Error retrieving session")
+	}
+
+	roleID := sess.Get("role_id")
+
 	var menus []models.Menu
-	if err := database.DBConn.Preload("Children").Order("urutan ASC").Find(&menus).Order("Urutan asc").Error; err != nil {
+	if err := database.DBConn.
+		Preload("Children", func(db *gorm.DB) *gorm.DB {
+			return db.Joins("JOIN usermenus ON usermenus.id_menu = menus.id_menu").
+				Where("usermenus.id_akses = ?", roleID).
+				Order("menus.urutan ASC")
+		}).
+		Joins("JOIN usermenus ON usermenus.id_menu = menus.id_menu").
+		Where("usermenus.id_akses = ? and ishide=0", roleID).
+		Order("menus.urutan ASC").
+		Find(&menus).Error; err != nil {
 		log.Println("Error retrieving menus:", err)
 		return c.Status(fiber.StatusInternalServerError).SendString("Error retrieving menus")
 	}
 
-	// log.Println("Grouped Menus:", groupedMenus)
 	c.Locals("menus", menus)
 	return c.Next()
 }
@@ -55,8 +70,17 @@ func CheckPrivileges(action string, menuID string) fiber.Handler {
 		// Check if the user has the right privileges
 		hasAccess := getPrivileges(database.DBConn, action, menuID, roleID.(uint))
 
+		userName := sess.Get("name_user")
+		menus := c.Locals("menus").([]models.Menu)
+		floors := c.Locals("floors").([]models.Lantai)
+
 		if !hasAccess {
-			return c.Status(fiber.StatusForbidden).SendString("You do not have access to this menu")
+			// return c.Status(fiber.StatusForbidden).SendString("You do not have access to this menu")
+			return c.Render("403", fiber.Map{
+				"menus":  menus,
+				"Floors": floors,
+				"Name":   userName,
+			})
 		}
 
 		// Continue if user has access

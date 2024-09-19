@@ -25,3 +25,7 @@ func toUpperCase(s interface{}) string {
 	}
 	return ""
 }
+
+func Add(a, b int) int {
+	return a + b
+}

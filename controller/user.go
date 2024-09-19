@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"log"
 	"rangpol/database"
 	"rangpol/middleware"
 	"rangpol/models"
@@ -73,7 +74,18 @@ func LoginPostController(c *fiber.Ctx) error {
 
 	sess.Save()
 
+	// log.Println(user.Level)
+
+	if user.Level == 2 {
+		// Jika role_id = 2, arahkan ke halaman admin
+		log.Println("Redirecting to /admin")
+		return c.Redirect("/admin")
+	}
+
+	// Jika role_id selain 2, arahkan ke halaman utama
+	log.Println("Redirecting to /")
 	return c.Redirect("/")
+
 }
 
 func LogoutController(c *fiber.Ctx) error {

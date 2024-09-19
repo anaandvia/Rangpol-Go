@@ -9,7 +9,7 @@ import (
 )
 
 // AdminPage handles the /admin route
-func AdminPage(c *fiber.Ctx) error {
+func DataRuanganController(c *fiber.Ctx) error {
 	// if err := middleware.RequireUserLevel(c, 1); err != nil {
 	// 	return err
 	// }
@@ -54,12 +54,12 @@ func AdminPage(c *fiber.Ctx) error {
 	// Render halaman dengan data yang diperlukan
 	fmt.Println("menus : ", menus)
 
-	return c.Render("Adminpage", fiber.Map{
+	return c.Render("dataruangan", fiber.Map{
 		"isIndex":       1,
-		"Dashboard":     "Dashboard",
+		"Dashboard":     "Data Ruangan",
 		"flash_error":   flashError,
 		"flash_success": flashSuccess,
-		"Title":         "Admin Page",
+		"Title":         "Data Ruangan",
 		"menus":         menus,
 		"Name":          userName,
 	})

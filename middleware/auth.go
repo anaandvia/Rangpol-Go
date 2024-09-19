@@ -2,6 +2,7 @@
 package middleware
 
 import (
+	"log"
 	"rangpol/database"
 	"rangpol/models"
 
@@ -14,9 +15,36 @@ func RedirectIfAuthenticated(c *fiber.Ctx) error {
 		return err
 	}
 
-	// Check if the user is authenticated
-	if sess.Get("user_id") != nil {
-		return c.Redirect("/")
+	userID := sess.Get("user_id")
+	roleID := sess.Get("role_id")
+
+	// Jika user sudah login, redirect ke halaman sesuai dengan role
+	if c.Path() == "/login" {
+		log.Println("Checking login path...")
+
+		// If user is authenticated, redirect to the appropriate page
+		if userID != nil {
+			log.Println("userID is not nil")
+
+			// Assert roleID as uint
+			roleIDUint, ok := roleID.(uint)
+			if !ok {
+				log.Println("roleID is not of type uint")
+				return c.Redirect("/")
+			}
+
+			// Compare the uint value
+			if roleIDUint == 2 {
+				log.Println("Redirecting to /admin")
+				return c.Redirect("/admin")
+			}
+
+			return c.Redirect("/")
+		}
+
+		// Continue to login page if user is not authenticated
+		log.Println("user is not authenticated")
+		return c.Next()
 	}
 
 	return c.Next()

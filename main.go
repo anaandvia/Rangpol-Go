@@ -45,6 +45,16 @@ func main() {
 	app.Static("/js", "./views/js")
 
 	// store := session.New()
+	// app.Use(csrf.New())
+	// app.Use(helmet.New())
+
+	// app.Use(limiter.New(limiter.Config{
+	// 	Max:        5, // Max requests
+	// 	Expiration: 1 * time.Minute,
+	// 	LimitReached: func(c *fiber.Ctx) error {
+	// 		return c.Status(429).SendString("Rate limit exceeded. Please try again later.")
+	// 	},
+	// }))
 
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: "*",
@@ -52,6 +62,7 @@ func main() {
 	}))
 	app.Use(middleware.LantaiMiddleware())
 	app.Use(middleware.GetMenu)
+	app.Use(middleware.RedirectIfAuthenticated)
 
 	app.Use(logger.New())
 	// app.Use(store.Handler())
