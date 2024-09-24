@@ -3,10 +3,10 @@ package controller
 import (
 	"fmt"
 	"log"
-	"math/rand"
-	"mime/multipart"
 	"path/filepath"
 	"rangpol/database"
+	"rangpol/helper"
+	_ "rangpol/helper"
 	"rangpol/middleware"
 	"rangpol/models"
 	"strconv"
@@ -116,7 +116,7 @@ func PengembalianController(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).SendString("Error getting file: " + err.Error())
 	}
 
-	if !isValidFileType(file) {
+	if !helper.IsValidFileType(file) {
 		// return c.Status(fiber.StatusInternalServerError).SendString("Invalid file type. Only JPG, PNG, and JPEG are allowed.")
 		sess.Set("flash_error", "Invalid file type. Only JPG, PNG, and JPEG are allowed.")
 		if err := sess.Save(); err != nil {
@@ -134,7 +134,7 @@ func PengembalianController(c *fiber.Ctx) error {
 	// Define the file upload path
 	uploadPath := "./views/img/pengembalian/" // Make sure this directory exists and is writable
 
-	newFileName := renameFile(file.Filename)
+	newFileName := helper.RenameFile(file.Filename)
 
 	// Gabungkan path dengan nama file baru
 	filePath := filepath.Join(uploadPath, newFileName)
@@ -170,46 +170,4 @@ func PengembalianController(c *fiber.Ctx) error {
 	}
 
 	return c.Redirect("/history")
-}
-
-// Validasi MIME type file
-func isValidFileType(file *multipart.FileHeader) bool {
-	// Mendapatkan MIME type file
-	fileType := file.Header.Get("Content-Type")
-
-	log.Println(fileType)
-
-	// Daftar MIME type yang diizinkan
-	allowedTypes := map[string]bool{
-		"image/jpeg": true,
-		"image/png":  true,
-		"image/jpg":  true,
-	}
-
-	return allowedTypes[fileType]
-}
-
-func randomString(length int) string {
-	const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-	seededRand := rand.New(rand.NewSource(time.Now().UnixNano()))
-	b := make([]byte, length)
-	for i := range b {
-		b[i] = charset[seededRand.Intn(len(charset))]
-	}
-	return string(b)
-}
-
-// Fungsi untuk mengubah nama file
-func renameFile(originalName string) string {
-	// Dapatkan ekstensi file
-	extension := filepath.Ext(originalName)
-	// Dapatkan nama tanpa ekstensi
-	baseName := originalName[:len(originalName)-len(extension)]
-
-	// Buat string acak yang berisi angka dan huruf
-	randomStr := randomString(8) // Misal panjangnya 8 karakter
-
-	// Gabungkan nama file baru dengan string acak dan ekstensi file
-	newName := fmt.Sprintf("%s_%s%s", baseName, randomStr, extension)
-	return newName
 }

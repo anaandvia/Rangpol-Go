@@ -6,7 +6,7 @@
     {{range .Rooms}}
     <div class="card ml-2 mr-2 rooms" style="width: 18rem;">
         <a href="/detail_room?id={{.Id_room}}">
-            <img src="{{.Foto}}" class="card-img-top" alt="Room Image" style="height: 150px;">
+            <img src="/img/ruangan/{{.Foto}}" class="card-img-top" alt="Room Image" style="height: 150px;">
             <div class="card-body">
                 <h5 class="card-title">{{.No_room}}</h5>
                 <p class="card-text">{{.Name_room}}</p>

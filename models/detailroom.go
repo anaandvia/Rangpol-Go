@@ -7,4 +7,5 @@ type DetailRoom struct {
 	Keperluan     string `json:"keperluan" gorm:"not null;column:keperluan;size:50"`
 	PIC           string `json:"pic" gorm:"not null;column:pic;size:100"`
 	Koorlab       string `json:"koorlab" gorm:"not null;column:koorlab;size:100"`
+	Dlt           int    `gorm:"default:0"`
 }

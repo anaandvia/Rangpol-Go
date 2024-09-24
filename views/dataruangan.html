@@ -10,7 +10,7 @@
             <form class="form-inline my-2 my-lg-0 ml-auto">
                 <a href="#" data-target="#ModalTambah" data-toggle="modal" class="btn btn-warning mb-2 btndata">
                     <i class="fas fa-plus-circle mr-2"></i>TAMBAH DATA RUANGAN</a>&nbsp;
-                <a href="/ruangan/dataruangan/print" class="btn btn-warning mb-2 btndata">
+                <a href="/admin/dataruangan/print" class="btn btn-warning mb-2 btndata">
                     <i class="fas fa-print mr-2"></i>CETAK DATA RUANGAN</a>
 
             </form>
@@ -40,8 +40,8 @@
                             <td>{{.Name_room}}</td>
                             <td>{{.Lantai}}</td>
                             <td>{{.Kapasitas}}</td>
-                            <td><a href="#" data-target="#Foto{{.Id_room}}" data-toggle="modal"
-                                data-id="{{.Id_room}}"><img src="{{ .Foto }}" alt="" class="img-thumbnail" style="width: 100px; height: auto;"></a></td>
+                            <td>{{ if .Foto }}<a href="#" data-target="#Foto{{.Id_room}}" data-toggle="modal"
+                                data-id="{{.Id_room}}"><img src="/img/ruangan/{{ .Foto }}" alt="" class="img-thumbnail" style="width: 100px; height: auto;"></a>{{ else }} Tidak ada foto {{ end }}</td>
                             <td>
                                 {{if eq .Status true}}
                                 Available
@@ -65,7 +65,7 @@
                             <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-body">
-                                <img src="{{ .Foto }}" alt="" style="width: 100%; height: auto;">
+                                <img src="/img/ruangan/{{ .Foto }}" alt="" style="width: 100%; height: auto;">
                                 </div>
                                 <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -86,7 +86,7 @@
                                             </button>
                                         </div>
                                         <div class="modal-body">
-                                            <form action="/ruangan/dataruangan/delete/{{ .Id_room }}" method="post">
+                                            <form action="/admin/dataruangan/delete/{{ .Id_room }}" method="post">
                                                 Apakah anda yakin ingin menghapus data <b>
                                                     {{ .Name_room}}</b> ?
                                                 <div class="modal-footer">
@@ -116,8 +116,9 @@
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <form action="/ruangan/dataruangan/update/{{ .Id_room }}" method="post">
+                                        <form action="/admin/dataruangan/update/{{ .Id_room }}" method="post" enctype="multipart/form-data">
                                             <input type="hidden" name="id_user" id="id_user" value="{{ .Id_room }}">
+                                            <input type="hidden" name="oldfoto" id="oldfoto" value="{{ .Foto }}">
                                             <div class="form-row">
                                                 <div class="form-group col-md-6">
                                                     <label>NO RUANGAN</label>
@@ -136,10 +137,11 @@
                                                 <div class="form-group col-md-6">
                                                     <label for="lantai">LANTAI</label>
                                                     <select class="form-control" id="lantai" name="lantai" required>
-                                                        <option value="1" {{if eq .Lantai 1}}selected{{end}}>1
-                                                        </option>
-                                                        <option value="2" {{if eq .Lantai 2}}selected{{end}}>2
-                                                        </option>
+                                                        {{ range $.Floors }}
+                                                            <option value="{{ .No_lantai }}" {{ if eq $.Lantai.Lantai .No_lantai }}selected{{ end }}>
+                                                                {{ .No_lantai }}
+                                                            </option>
+                                                        {{ end }}
                                                     </select>
                                                 </div>
                                             </div>
@@ -155,7 +157,7 @@
                                                 <div class="form-group col-md-6">
                                                     <label>Foto Saat Ini</label><br>
                                                     {{ if .Foto }}
-                                                    <img src="{{ .Foto }}" alt="Foto Ruangan" class="img-fluid"
+                                                    <img src="/img/ruangan/{{ .Foto }}" alt="Foto Ruangan" class="img-fluid"
                                                         style="max-width: 150px;">
                                                     {{ else }}
                                                     <p>Tidak ada foto</p>
@@ -174,10 +176,10 @@
                                                 <div class="form-group col-md-6">
                                                     <label for="status">STATUS</label>
                                                     <select class="form-control" id="status" name="status" required>
-                                                        <option value="1" {{if eq .Status false}}selected{{end}}>Not
+                                                        <option value="0" {{if eq .Status false}}selected{{end}}>Not
                                                             Available
                                                         </option>
-                                                        <option value="0" {{if eq .Status true}}selected{{end}}>Available
+                                                        <option value="1" {{if eq .Status true}}selected{{end}}>Available
                                                         </option>
                                                     </select>
                                                 </div>
@@ -210,7 +212,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="/ruangan/dataruangan/tambah" method="post" enctype="multipart/form-data">
+                    <form action="/admin/dataruangan/tambah" method="post" enctype="multipart/form-data">
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label>NO RUANGAN</label>
@@ -227,8 +229,10 @@
                             <div class="form-group col-md-6">
                                 <label for="lantai">LANTAI</label>
                                 <select class="form-control" id="lantai" name="lantai" required>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
+                                    {{range .Floors}}
+                                    <option>{{.No_lantai}}
+                                    </option>
+                                    {{end}}
                                 </select>
                             </div>
                         </div>

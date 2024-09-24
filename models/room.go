@@ -8,6 +8,7 @@ type Room struct {
 	Kapasitas  uint         `json:"kapasitas" gorm:"not null;column:kapasitas"`
 	Foto       string       `json:"foto" gorm:"not null;column:foto;size:255"`
 	Status     bool         `json:"status" gorm:"not null;column:status"`
+	Dlt        int          `gorm:"default:0"`
 	DetailRoom DetailRoom   `gorm:"foreignKey:Id_room;references:Id_room"` // Make sure to reference the correct keys
 	Peminjaman []Peminjaman `gorm:"foreignKey:IdRoom;references:Id_room"`
 }

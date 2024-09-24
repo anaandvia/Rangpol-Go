@@ -48,13 +48,13 @@ func HomeController(c *fiber.Ctx) error {
 	// Ambil data ruangan dari database
 	var rooms []models.Room
 	if idLantai != "" {
-		if err := database.DBConn.Where("lantai = ?", idLantai).Find(&rooms).Error; err != nil {
+		if err := database.DBConn.Where("lantai = ? and dlt = ?", idLantai, 0).Find(&rooms).Error; err != nil {
 			return c.Status(fiber.StatusInternalServerError).SendString("Error retrieving rooms")
 		}
 		dashboard = "Lantai " + idLantai
 	} else {
 		// Jika tidak ada ID lantai, ambil semua ruangan
-		if err := database.DBConn.Find(&rooms).Error; err != nil {
+		if err := database.DBConn.Where("dlt = ?", 0).Find(&rooms).Error; err != nil {
 			return c.Status(fiber.StatusInternalServerError).SendString("Error retrieving rooms")
 		}
 	}

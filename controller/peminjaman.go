@@ -54,7 +54,7 @@ func PeminjamanFormController(c *fiber.Ctx) error {
 
 	var rooms []models.Room
 	// Fetch the room details from the database along with its associated details
-	if err := database.DBConn.Find(&rooms).Error; err != nil {
+	if err := database.DBConn.Where("dlt = ?", 0).Find(&rooms).Error; err != nil {
 		return c.Status(fiber.StatusInternalServerError).SendString("Error retrieving rooms")
 	}
 
