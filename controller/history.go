@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"rangpol/database"
 	"rangpol/helper"
 	"rangpol/middleware"
@@ -56,9 +57,16 @@ func HistoryPeminjamanController(c *fiber.Ctx) error {
 		peminjaman[i].TglAcaraDay = helper.GetIndonesianDay(peminjaman[i].TglAcara.Weekday())
 		peminjaman[i].TglAkhirAcaraDay = helper.GetIndonesianDay(peminjaman[i].TglAkhirAcara.Weekday())
 
-		for j := range peminjaman[i].Pengembalian {
-			peminjaman[i].Pengembalian[j].TglPengembalianFormatted = peminjaman[i].Pengembalian[j].TglPengembalian.Format("02-01-2006 jam 15:04")
-			peminjaman[i].Pengembalian[j].TglPengembalianDay = helper.GetIndonesianDay(peminjaman[i].Pengembalian[j].TglPengembalian.Weekday())
+		if peminjaman[i].Pengembalian != nil {
+			peminjaman[i].Pengembalian.TglPengembalianFormatted = peminjaman[i].Pengembalian.TglPengembalian.Format("02-01-2006 jam 15:04")
+			peminjaman[i].Pengembalian.TglPengembalianDay = helper.GetIndonesianDay(peminjaman[i].Pengembalian.TglPengembalian.Weekday())
+
+			fmt.Printf("Peminjaman ID: %d, Tgl Pengembalian: %s, Hari: %s\n",
+				peminjaman[i].IdPeminjaman,
+				peminjaman[i].Pengembalian.TglPengembalianFormatted,
+				peminjaman[i].Pengembalian.TglPengembalianDay)
+		} else {
+			fmt.Printf("Peminjaman ID: %d tidak memiliki pengembalian.\n", peminjaman[i].IdPeminjaman)
 		}
 
 	}

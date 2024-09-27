@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"path/filepath"
@@ -11,6 +12,7 @@ import (
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
 )
 
 func DataRuanganController(c *fiber.Ctx) error {
@@ -350,6 +352,22 @@ func DeleteRuanganController(c *fiber.Ctx) error {
 			return c.Status(fiber.StatusInternalServerError).SendString("Error saving session")
 		}
 		return c.Redirect("/admin/dataruangan")
+	}
+
+	var existingPeminjaman models.Peminjaman
+	if err := database.DBConn.Where("id_room = ? and dlt = ?", roomID, 0).First(&existingPeminjaman).Error; err == nil {
+		// Room number is already in use
+		sess.Set("flash_error", "Tidak dapat di hapus! Ruangan digunakan pada peminjaman ruangan")
+		if err := sess.Save(); err != nil {
+			return c.Status(fiber.StatusInternalServerError).SendString("Error saving session")
+		}
+		return c.Redirect("/admin/dataruangan")
+	} else if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		// Jika terjadi error selain data tidak ditemukan, maka kembalikan error lainnya
+		fmt.Println("Error: ", err)
+
+		// Tampilkan pesan error umum kepada pengguna
+		return c.Status(fiber.StatusInternalServerError).SendString("Terjadi kesalahan pada database, silakan coba lagi.")
 	}
 
 	// Update the dlt status to indicate the room is deleted

@@ -15,3 +15,13 @@
 .rooms a {
     color: black;
 }
+
+.table th {
+    text-align: center; /* Menengahkan teks di header */
+}
+.table td {
+    vertical-align: middle; /* Menengahkan konten dalam sel */
+}
+.tgl-acara {
+    width: 20%; /* Lebar khusus untuk kolom Tanggal Acara */
+}

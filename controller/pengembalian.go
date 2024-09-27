@@ -66,9 +66,9 @@ func PengembalianFormController(c *fiber.Ctx) error {
 	}
 
 	formattedTglAcara := formatDateTime(peminjaman.TglAcara)
-	formattedTglPengembalian := formatDateTime(peminjaman.Pengembalian[0].TglPengembalian)
+	formattedTglPengembalian := formatDateTime(peminjaman.Pengembalian.TglPengembalian)
 	statuskembali := 0
-	if peminjaman.Pengembalian[0].StatusKembali == 1 {
+	if peminjaman.Pengembalian.StatusKembali == 1 {
 		statuskembali = 1
 	}
 

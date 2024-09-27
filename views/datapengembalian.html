@@ -1,10 +1,156 @@
 {{ define "datapengembalian" }}
 {{template "header" .}}
 
-<h2>Data Pengembalian</h2>
-</div>
-{{template "footer" }}
-</body>
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <!-- <h1 class="text-white">Data Peminjaman</h1> -->
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <form class="form-inline my-2 my-lg-0 ml-auto">
+                <a href="/admin/datapengembalian/print" class="btn btn-warning mb-2 btndata">
+                    <i class="fas fa-print mr-2"></i>CETAK DATA PENGEMBALIAN</a>
 
-</html>
-{{ end }}
+            </form>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered" id="dataTable" width="100%" cellspacing="0"
+                    style="color: black;">
+                    <thead>
+                        <tr>
+                            <th scope="col">NO</th>
+                            <th scope="col">ID PEMINJAMAN</th>
+                            <th scope="col">NIM/NIDK/NIK</th>
+                            <th scope="col" style="width: 20%;">TGL PEMINJAMAN</th>
+                            <th scope="col">TGL PENGEMBALIAN</th>
+                            <th scope="col">FOTO BUKTI</th>
+                            <th scope="col">UMPAN BALIK</th>
+                            <th scope="col">STATUS</th>
+                            <th scope="col">KETERANGAN</th>
+                            <th scope="col">AKSI</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{ $index := 1 }}
+                        {{range .Peminjaman}}
+                        <tr>
+                            <td>{{ $index}}</td>
+                            <td><a href="/admin/datapeminjaman?id={{ .IdPeminjaman }}">{{ .IdPeminjaman }}</a></td>
+                            <td><a href="/admin/datauser?id={{ .User.Id_user }}">{{ .User.Nim }}</a></td>
+                            <td>{{ .TglAcaraDay }}, {{ .TglAcaraFormatted }} sampai {{ .TglAkhirAcaraDay }}, {{ .TglAkhirAcaraFormatted }}</td>
+                            <td>{{ if ne .Pengembalian.TglPengembalianDay "" }} {{ .Pengembalian.TglPengembalianDay }}, {{ .Pengembalian.TglPengembalianFormatted }}
+                                {{ end }}
+                            </td>
+                            <td>{{ if .Pengembalian.FotoB }}<a href="#" data-target="#FotoB{{.Pengembalian.Id}}" data-toggle="modal"
+                                data-id="{{.Pengembalian.Id}}"><img src="/img/pengembalian/{{.Pengembalian.FotoB }}" alt="" class="img-thumbnail" style="width: 100px; height: auto;"></a>{{ else }} Tidak ada foto {{ end }}</td>
+                            <td>{{ .Pengembalian.Kendala }}</td>
+                            <td>{{if eq .Pengembalian.StatusKembali 0}} Belum Di Kembalikan 
+                                {{ else if eq .Pengembalian.StatusKembali 1 }} Pengembalian Di setujui 
+                                {{ else }} 
+                                Ditolak 
+                                {{ end }}
+                            </td>
+                            <td class="{{ if eq .KeteranganTelat "Selesai" }}text-success{{ else }}text-danger{{ end }}">
+                                {{ .KeteranganTelat }}
+                            </td>
+                            <td>
+                                <a href="#" data-target="#EditPengembalian{{.Pengembalian.Id}}" data-toggle="modal"
+                                    data-id="{{.Pengembalian.Id}}">
+                                    <i class="fas fa-edit bg-success p-2 text-white rounded"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        <div class="modal fade" id="FotoB{{ .Pengembalian.Id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" role="dialog">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-body">
+                                        <img src="/img/pengembalian/{{ .Pengembalian.FotoB }}" alt="" style="width: 100%; height: auto;">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Modal Edit -->
+                        <div class="modal fade" id="EditPengembalian{{.Pengembalian.Id}}" tabindex="-1" role="dialog"
+                            aria-labelledby="EditPengembalianLabel{{.Pengembalian.Id}}" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="label">
+                                            Ubah
+                                            Data
+                                            Pengembalian</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="/admin/datapengembalian/update/{{ .Pengembalian.Id }}" method="post" enctype="multipart/form-data">
+                                            <input type="hidden" name="id_user" id="id_user" value="{{ .Pengembalian.Id }}">
+                                            <div class="form-row">
+                                                <div class="form-group col-md-6">
+                                                    <label for="status">STATUS</label>
+                                                    <select class="form-control" id="status" name="status" required>
+                                                        <option value="0" {{if eq .Pengembalian.StatusKembali 0}}selected{{end}}>Di ajukan
+                                                        </option>
+                                                        <option value="1" {{if eq .Pengembalian.StatusKembali 1}}selected{{end}}>Di setujui
+                                                        </option>
+                                                        <option value="2" {{if eq .Pengembalian.StatusKembali 2}}selected{{end}}>Di tolak
+                                                        </option>
+                                                    </select>
+                                                    <label for="keterangan">KETERANGAN</label>
+                                                    <textarea class="form-control" name="keterangan" id="keterangan"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn btn-warning">SIMPAN</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- edit -->
+                        
+                        {{end}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Delete -->
+
+    {{template "footer" }}
+    <script type="text/javascript" class="init">
+        $(document).ready(function () {
+            var table = $('#dataTable').DataTable({
+                pageLength: 5,
+                lengthMenu: [
+                    [5, 10, 20, -1],
+                    [5, 10, 20, 'Semua']
+                ],
+                order: [
+                    [1, 'desc']
+                ],
+                language: {
+                    lengthMenu: "Menampilkan _MENU_ data",
+                    zeroRecords: "Tidak ada data",
+                    info: "Halaman _PAGE_ dari _PAGES_",
+                    infoFiltered: "(difilter dari _MAX_ data)",
+                    search: "Pencarian :",
+                    paginate: {
+                        previous: "Sebelumnya",
+                        next: "Selanjutnya",
+                    }
+                },
+            })
+        });
+    </script>
+
+    </body>
+
+    </html>
+    {{ end }}

@@ -33,13 +33,11 @@
                                     {{.TglAkhirAcaraDay}}, {{.TglAkhirAcaraFormatted}}</td>
                                 <td>
                                     {{if eq .Status 1}}
-                                    <a href="/kembalikan?id={{ .IdPeminjaman }}">{{ if eq (index .Pengembalian 0).StatusKembali 1 }}Lihat Pengembalian{{ else }}Kembalikan{{ end }}</a>
+                                    <a href="/kembalikan?id={{ .IdPeminjaman }}">{{ if eq .Pengembalian.StatusKembali 1 }}Lihat Pengembalian{{ else }}Kembalikan{{ end }}</a>
                                     {{else}}
-                                        {{range .Pengembalian}}
-                                            {{if not .TglPengembalian.IsZero}}
-                                            {{.TglPengembalianDay}}, {{.TglPengembalianFormatted}}
+                                            {{if not .Pengembalian.TglPengembalian.IsZero}}
+                                            {{ .Pengembalian.TglPengembalianDay}}, {{ .Pengembalian.TglPengembalianFormatted}}
                                             {{end}}
-                                        {{end}}
                                     {{end}}
                                 </td>
                                 <td>

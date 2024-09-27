@@ -1,13 +1,13 @@
 {{ define "pengembalian" }}
 {{template "header" .}}
 
-{{- $isReadOnly := (index .Peminjaman.Pengembalian 0).StatusKembali -}}
+{{- $isReadOnly := .Peminjaman.Pengembalian.StatusKembali -}}
 
 <div class="row" style="text-align:left;">
     <div class="col-lg-6">
         <form action="/kembalikan" method="post" enctype="multipart/form-data">
             <input type="hidden" name="id_pengembalian" id="id_pengembalian"
-                value="{{(index .Peminjaman.Pengembalian 0).Id}}">
+                value="{{.Peminjaman.Pengembalian.Id}}">
             <input type="hidden" name="id_peminjaman" id="id_peminjaman" value="{{ .Peminjaman.IdPeminjaman}}">
             <div class="form-group">
                 <label for="nama_kegiatan">Nama Kegiatan</label>
@@ -36,7 +36,7 @@
                     {{ if eq $isReadOnly 1 }} disabled {{ end }}>
                 <br>
                 {{ if eq $isReadOnly 1 }}
-                <img id="imageKembali" src="./img/pengembalian/{{ (index .Peminjaman.Pengembalian 0).FotoB }}"
+                <img id="imageKembali" src="./img/pengembalian/{{ .Peminjaman.Pengembalian.FotoB }}"
                     alt="Image Kembali" style="max-width: 50%; height: auto;"> {{ end }}
                 <img id="imagePreview" src="#" alt="Image Preview" style="display: none; max-width: 50%; height: auto;">
                 <div id="error-message" style="color: red; display: none;">Invalid file format. Please select a valid

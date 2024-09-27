@@ -88,19 +88,27 @@
     document.addEventListener('DOMContentLoaded', function () {
         const tglAcaraInput = document.getElementById('tgl_acara');
         const tglAkhirAcaraInput = document.getElementById('tgl_akhir_acara');
-
+    
+        // Set the value of tgl_acara to the current date and time
+        const now = new Date();
+        const formattedNow = now.toISOString().slice(0, 19); // Format YYYY-MM-DDTHH:MM
+        tglAcaraInput.value = formattedNow;
+    
+        // Set min attribute of tgl_acara to the current date and time
+        tglAcaraInput.min = formattedNow;
+    
         tglAcaraInput.addEventListener('change', function () {
             // Get the value of tgl_acara
             const tglAcaraValue = tglAcaraInput.value;
-
+    
             // Set the min attribute of tgl_akhir_acara to ensure it's later than tgl_acara
             tglAkhirAcaraInput.min = tglAcaraValue;
         });
-
+    
         tglAkhirAcaraInput.addEventListener('change', function () {
             const tglAcaraValue = tglAcaraInput.value;
             const tglAkhirAcaraValue = tglAkhirAcaraInput.value;
-
+    
             // Check if the end date is earlier than the start date
             if (tglAkhirAcaraValue < tglAcaraValue) {
                 Swal.fire({
@@ -112,7 +120,7 @@
             }
         });
     });
-</script>
+    </script>
 {{template "footer" }}
 </body>
 

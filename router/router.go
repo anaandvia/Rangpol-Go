@@ -58,6 +58,7 @@ func SetupRouters(app *fiber.App) {
 	// -------------------------------------------------------------
 	// ----------------------- Data Peminjaman ---------------------
 	app.Get("/admin/datapeminjaman", middleware.CheckPrivileges("view", "13"), controller.DataPeminjamanController)
+	app.Post("/admin/datapeminjaman/update/:id", middleware.CheckPrivileges("edit", "13"), controller.UpdatePeminjamanController)
 	// -------------------------------------------------------------
 	// ----------------------- Data Pengembalian -------------------
 	app.Get("/admin/datapengembalian", middleware.CheckPrivileges("view", "14"), controller.DataPengembalianController)

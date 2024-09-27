@@ -1,10 +1,197 @@
 {{ define "datapeminjaman" }}
 {{template "header" .}}
 
-<h2>Data Peminjaman</h2>
-</div>
-{{template "footer" }}
-</body>
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <!-- <h1 class="text-white">Data Peminjaman</h1> -->
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <form class="form-inline my-2 my-lg-0 ml-auto">
+                <a href="/admin/datapeminjaman/print" class="btn btn-warning mb-2 btndata">
+                    <i class="fas fa-print mr-2"></i>CETAK DATA PEMINJAMAN</a>
 
-</html>
-{{ end }}
+            </form>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered" id="dataTable" width="100%" cellspacing="0"
+                    style="color: black;">
+                    <thead>
+                        <tr>
+                            <th scope="col">NO</th>
+                            <th scope="col">NIM/NIDK/NIK</th>
+                            <th scope="col">NAMA PEMINJAM</th>
+                            <th scope="col">RUANGAN</th>
+                            <th scope="col">NAMA KEGIATAN</th>
+                            <th scope="col">TGL KEGIATAN</th>
+                            <th scope="col">TGL AKHIR KEGIATAN</th>
+                            <th scope="col">PENANGGUNG JAWAB</th>
+                            <th scope="col">PENGARAH KEGIATAN</th>
+                            <th scope="col">JUMLAH TAMU</th>
+                            <th scope="col">SIFAT ACARA</th>
+                            <th scope="col">JENIS ACARA</th>
+                            <th scope="col">KETERANGAN</th>
+                            <th scope="col">STATUS</th>
+                            <th scope="col">AKSI</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{ $index := 1 }}
+                        {{range .Peminjaman}}
+                        <tr>
+                            <td>{{ $index}}</td>
+                            <td>{{.User.Nim}}</td>
+                            <td>{{.User.Name_user}}</td>
+                            <td>{{.Room.No_room}} - {{ .Room.Name_room }}</td>
+                            <td>{{.NamaKegiatan}}</td>
+                            <td>{{.TglAcaraDay}}, {{.TglAcaraFormatted}}</td>
+                            <td>{{.TglAkhirAcaraDay}}, {{.TglAkhirAcaraFormatted}}</td>
+                            <td>{{.DetailPeminjaman.PJ}}</td>
+                            <td>{{.DetailPeminjaman.PK}}</td>
+                            <td>{{.DetailPeminjaman.NTamu}}</td>
+                            <td>{{.DetailPeminjaman.SifatAcara}}</td>
+                            <td>{{.DetailPeminjaman.JenisAcara}}</td>
+                            <td>{{.DetailPeminjaman.Keterangan}}</td>
+                            <td>{{if eq .Status 2}} Di tolak {{ else if eq .Status 1 }} Di setujui {{ else }} Di ajukan {{ end }}</td>
+                            <td>
+                                <a href="#" data-target="#EditPeminjaman{{.IdPeminjaman}}" data-toggle="modal"
+                                    data-id="{{.IdPeminjaman}}">
+                                    <i class="fas fa-edit bg-success p-2 text-white rounded"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        <!-- Modal Edit -->
+                        <div class="modal fade" id="EditPeminjaman{{.IdPeminjaman}}" tabindex="-1" role="dialog"
+                            aria-labelledby="EditPeminjamanLabel{{.IdPeminjaman}}" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="label">
+                                            Ubah
+                                            Data
+                                            Peminjaman</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="/admin/datapeminjaman/update/{{ .IdPeminjaman }}" method="post" enctype="multipart/form-data">
+                                            <input type="hidden" name="id_user" id="id_user" value="{{ .IdPeminjaman }}">
+                                            <div class="form-row">
+                                                <div class="form-group col-md-6">
+                                                    <label for="status">STATUS</label>
+                                                    <select class="form-control" id="status" name="status" required>
+                                                        <option value="0" {{if eq .Status 0}}selected{{end}}>Di ajukan
+                                                        </option>
+                                                        <option value="1" {{if eq .Status 1}}selected{{end}}>Di setujui
+                                                        </option>
+                                                        <option value="2" {{if eq .Status 2}}selected{{end}}>Di tolak
+                                                        </option>
+                                                    </select>
+                                                    <label for="keterangan">KETERANGAN</label>
+                                                    <textarea class="form-control" name="keterangan" id="keterangan"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn btn-warning">SIMPAN</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- edit -->
+                        {{end}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Delete -->
+
+    {{template "footer" }}
+
+    <script>
+        $(document).ready(function () {
+            var table = $('#dataTable').DataTable({
+                pageLength: 5,
+                lengthMenu: [
+                    [5, 10, 20, -1],
+                    [5, 10, 20, 'Semua']
+                ],
+                order: [
+                    [1, 'desc']
+                ],
+                language: {
+                    lengthMenu: "Menampilkan _MENU_ data",
+                    zeroRecords: "Tidak ada data",
+                    info: "Halaman _PAGE_ dari _PAGES_",
+                    infoFiltered: "(difilter dari _MAX_ data)",
+                    search: "Pencarian :",
+                    paginate: {
+                        previous: "Sebelumnya",
+                        next: "Selanjutnya",
+                    }
+                },
+            })
+        });
+        document.addEventListener('DOMContentLoaded', function () {
+            const tglAcaraInput = document.getElementById('tgl_acara');
+            const tglAkhirAcaraInput = document.getElementById('tgl_akhir_acara');
+        
+            // Set the date to today and time to 16:00 (4 PM) in WIB (+07:00)
+            const now = new Date();
+            // now.setHours(16, 0, 0, 0); // Set to 4 PM today
+            // Format to YYYY-MM-DDTHH:MM
+            const formattedNow = now.toISOString().slice(0, 19); 
+            tglAcaraInput.value = formattedNow;
+        
+            // Set min attribute of tgl_acara to the current date and time (4 PM today)
+            tglAcaraInput.min = formattedNow;
+        
+            tglAcaraInput.addEventListener('change', function () {
+                // Get the value of tgl_acara
+                const tglAcaraValue = tglAcaraInput.value;
+        
+                // Set the min attribute of tgl_akhir_acara to ensure it's later than tgl_acara
+                tglAkhirAcaraInput.min = tglAcaraValue;
+            });
+        
+            tglAkhirAcaraInput.addEventListener('change', function () {
+                const tglAcaraValue = tglAcaraInput.value;
+                const tglAkhirAcaraValue = tglAkhirAcaraInput.value;
+        
+                // Check if the end date is earlier than the start date
+                if (tglAkhirAcaraValue < tglAcaraValue) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Invalid Date',
+                        text: 'Tanggal akhir acara harus lebih besar dari tanggal acara.',
+                    });
+                    tglAkhirAcaraInput.value = '';
+                }
+            });
+        
+            // Function to convert to WIB (+07:00) and display
+            function displayWithTimezone(dateStr) {
+                const date = new Date(dateStr);
+                const options = {
+                    timeZone: 'Asia/Jakarta',
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false
+                };
+                return new Intl.DateTimeFormat('id-ID', options).format(date);
+            }
+        });
+        </script>
+
+    </body>
+
+    </html>
+    {{ end }}

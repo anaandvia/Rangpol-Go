@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"rangpol/database"
@@ -12,6 +13,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 )
 
 // AdminPage handles the /admin route
@@ -164,6 +166,22 @@ func DeleteAdminController(c *fiber.Ctx) error {
 			return c.Status(fiber.StatusInternalServerError).SendString("Error saving session")
 		}
 		return c.Redirect("/admin/dataadmin")
+	}
+
+	var existingPeminjaman models.Peminjaman
+	if err := database.DBConn.Where("id_user = ? and dlt = ?", userID, 0).First(&existingPeminjaman).Error; err == nil {
+		// Room number is already in use
+		sess.Set("flash_error", "Tidak dapat di hapus! User telah melakukan peminjaman ruangan")
+		if err := sess.Save(); err != nil {
+			return c.Status(fiber.StatusInternalServerError).SendString("Error saving session")
+		}
+		return c.Redirect("/admin/dataadmin")
+	} else if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		// Jika terjadi error selain data tidak ditemukan, maka kembalikan error lainnya
+		fmt.Println("Error: ", err)
+
+		// Tampilkan pesan error umum kepada pengguna
+		return c.Status(fiber.StatusInternalServerError).SendString("Terjadi kesalahan pada database, silakan coba lagi.")
 	}
 
 	// Mark user as deleted (set dlt to 1)

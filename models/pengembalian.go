@@ -13,4 +13,5 @@ type Pengembalian struct {
 	TglAccBack               time.Time `json:"tgl_acc_back" gorm:"type:date"`
 	TglPengembalianFormatted string
 	TglPengembalianDay       string `json:"tgl_pengembalian_day"`
+	Dlt                      int    `gorm:"default:0"`
 }
