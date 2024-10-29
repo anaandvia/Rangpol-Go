@@ -71,6 +71,9 @@ func SetupRouters(app *fiber.App) {
 
 	// -------------------------------------------------------------
 
-	// app.Get("/peminjaman", controller.PeminjamanFormController)
+	app.Get("/rincianssh", controller.DataRincianSshController)
+	// app.Get("/rincianssh/paginated", func(c *fiber.Ctx) error {
+	// 	return controller.GetPaginatedRincianssh(c, db)
+	// })
 
 }

@@ -43,9 +43,9 @@
                     image.</div>
             </div>
             <div class="form-group">
-                <label for="keterangan">Umpan Balik</label>
-                <textarea class="form-control" id="keterangan" name="keterangan" rows="3" placeholder="Keterangan"
-                    required {{ if eq $isReadOnly 1 }} readonly{{ end }}></textarea>
+                <label for="kendala">Umpan Balik</label>
+                <textarea class="form-control" id="kendala" name="kendala" rows="3" placeholder="kendala"
+                    required {{ if eq $isReadOnly 1 }} readonly{{ end }}>{{ .Peminjaman.Pengembalian.Kendala }}</textarea>
             </div>
     </div>
     <div class="col-lg-6">
