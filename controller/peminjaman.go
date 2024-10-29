@@ -6,6 +6,7 @@ import (
 	"rangpol/middleware"
 	"rangpol/models"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -76,6 +77,28 @@ func PeminjamanFormController(c *fiber.Ctx) error {
 	})
 }
 
+func parseDateTime(tglStr string) (time.Time, error) {
+	// Memastikan format yang benar untuk tglStr
+	if strings.Count(tglStr, ":") == 2 {
+		// Input sudah termasuk detik, tidak perlu ditambah
+		tglStr += ""
+	} else if strings.Count(tglStr, ":") == 1 {
+		// Jika tidak ada detik, tambahkan ":00"
+		tglStr += ":00"
+	}
+
+	// Menambahkan zona waktu dengan format yang benar
+	tglStrWithTZ := tglStr + "+07:00"
+
+	// Parse string to time.Time
+	tgl, err := time.Parse("2006-01-02T15:04:05-07:00", tglStrWithTZ)
+	if err != nil {
+		return time.Time{}, err
+	}
+
+	return tgl, nil
+}
+
 func PeminjamanController(c *fiber.Ctx) error {
 
 	sess, err := middleware.GetSessionStore().Get(c)
@@ -89,16 +112,12 @@ func PeminjamanController(c *fiber.Ctx) error {
 	namaKegiatan := c.FormValue("nama_kegiatan")
 	tglAcaraStr := c.FormValue("tgl_acara")
 	tglAkhirAcaraStr := c.FormValue("tgl_akhir_acara")
-	tglAcaraWithTZ := tglAcaraStr + "+07:00"
-	tglAkhirAcaraWithTZ := tglAkhirAcaraStr + "+07:00"
-
-	// Parse string to time.Time
-	tglAcara, err := time.Parse(time.RFC3339, tglAcaraWithTZ)
+	tglAcara, err := parseDateTime(tglAcaraStr)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).SendString("Invalid datetime format for tgl_acara: " + err.Error())
 	}
 
-	tglAkhirAcara, err := time.Parse(time.RFC3339, tglAkhirAcaraWithTZ)
+	tglAkhirAcara, err := parseDateTime(tglAkhirAcaraStr)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).SendString("Invalid datetime format for tgl_akhir_acara: " + err.Error())
 	}
